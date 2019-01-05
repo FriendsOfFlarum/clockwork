@@ -197,7 +197,7 @@ class FlarumDataSource extends  DataSource
         /**
          * @var $data UserData
          */
-        $data = app('clockwork')->userData('HtmlDocument');
+        $data = app('clockwork')->userData('Flarum');
 
         $data->title('Flarum');
 
@@ -219,10 +219,37 @@ class FlarumDataSource extends  DataSource
             ['Language', $document->language],
             ['Direction', $document->direction],
             ['Title', $document->title],
-            ['SEO', $document->content],
         ]);
 
+        $data->table(
+            null,
+            collect($document->meta)
+                ->map(function ($value, $key) {
+                    return ['Meta' => $key, null => $value];
+                })
+                ->toArray()
+        );
 
+        $data->table(
+            null,
+            collect($document->head)
+                ->map(function ($value) {
+                    return ['Head' => $value];
+                })
+                ->toArray()
+        );
+
+        $data->table(
+            null,
+            collect($document->payload)
+                ->filter(function ($value, $key) {
+                    return $key !== 'resources';
+                })
+                ->map(function ($value, $key) {
+                    return ['Payload' => $key, null => $value];
+                })
+                ->toArray()
+        );
 
         $data->table(
             null,
