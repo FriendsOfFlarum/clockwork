@@ -21,36 +21,35 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.eloquent']->listenToEvents();
         $this->app['clockwork.cache']->listenToEvents();
         $this->app['clockwork.flarum']->listenToEvents();
-//        $this->app['clockwork.events']->listenToEvents();
+        $this->app['clockwork.events']->listenToEvents();
     }
 
     public function register() {
-//        $app->alias('log', Log::class);
 
         $this->app->singleton('clockwork.support', function ($app) {
             return new ClockworkSupport($app);
         });
 
         $this->app->singleton('clockwork.log', function () {
-            return (new Log)->collectStackTraces(true);
+            return (new Log)->collectStackTraces();
         });
 
         $this->app->singleton('clockwork.eloquent', function ($app) {
             return (new EloquentDataSource($app['db'], $app['events']))
-                ->collectStackTraces(true);
+                ->collectStackTraces();
         });
 
         $this->app->singleton('clockwork.cache', function ($app) {
             return (new LaravelCacheDataSource($app['events']))
-                ->collectStackTraces(true);
+                ->collectStackTraces();
         });
 
         $this->app->singleton('clockwork.events', function ($app) {
             return (new LaravelEventsDataSource($app['events'], [
-                'Flarum\\\\Foundation\\\\.+',
                 'Flarum\\\\Event\\\\.+',
+                'Flarum\\\\Api\\\\Event\\\\.+',
             ]))
-                ->collectStackTraces(true);
+                ->collectStackTraces(false);
         });
 
         $this->app->singleton('clockwork.xdebug', function () {
@@ -59,7 +58,7 @@ class ClockworkServiceProvider extends ServiceProvider
 
         $this->app->singleton('clockwork.flarum', function ($app) {
             return (new FlarumDataSource($app))
-                ->collectViews(true)
+                ->collectViews()
                 ->setLog($app['clockwork.log']);
         });
 
@@ -75,10 +74,10 @@ class ClockworkServiceProvider extends ServiceProvider
 
             $clockwork
                 ->addDataSource(new MonologDataSource($app['log']))
-                ->addDataSource($app['clockwork.flarum'])
                 ->addDataSource($app['clockwork.eloquent'])
                 ->addDataSource($app['clockwork.cache'])
-                ->addDataSource($app['clockwork.events']);
+                ->addDataSource($app['clockwork.events'])
+                ->addDataSource($app['clockwork.flarum']);
 
             if (in_array('xdebug', get_loaded_extensions())) {
                 $clockwork->addDataSource($app['clockwork.xdebug']);

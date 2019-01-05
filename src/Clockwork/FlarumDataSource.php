@@ -49,6 +49,8 @@ class FlarumDataSource extends  DataSource
      */
     protected $response;
 
+    public $count;
+
     /**
      * Create a new data source, takes Laravel application instance as an argument
      */
@@ -111,13 +113,9 @@ class FlarumDataSource extends  DataSource
         $this->app['events']->listen('clockwork.controller.start', function () {
             $this->timeline->startEvent('controller', 'Controller running.');
         });
+
         $this->app['events']->listen('clockwork.controller.end', function () {
             $this->timeline->endEvent('controller');
-        });
-
-        // Laravel 5.0 to 5.3
-        $this->app['events']->listen('illuminate.log', function ($level, $message, $context) {
-            $this->log->log($level, $message, $context);
         });
 
         $this->app['events']->listen('composing:*', function ($view, $data = null) {
@@ -158,6 +156,14 @@ class FlarumDataSource extends  DataSource
         $this->app->booted(function () {
             $this->timeline->endEvent('initialisation');
             $this->timeline->endEvent('boot');
+        });
+
+        $this->count = [];
+
+        $this->app['events']->listen('*', function ($event) {
+            $str = is_string($event) ? $event : get_class($event);
+            $this->count[$str] = array_get($this->count, $str) ?? 0;
+            $this->count[$str]++;
         });
     }
 
@@ -215,5 +221,17 @@ class FlarumDataSource extends  DataSource
             ['Title', $document->title],
             ['SEO', $document->content],
         ]);
+
+
+
+        $data->table(
+            null,
+            collect($this->count)
+                ->map(function ($value, $key) {
+                    return ['Events' => $key, 'Count' => $value];
+                })
+                ->sortBy('Count', SORT_REGULAR, true)
+                ->toArray()
+        );
     }
 }

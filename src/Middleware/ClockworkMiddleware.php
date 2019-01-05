@@ -38,6 +38,8 @@ class ClockworkMiddleware implements MiddlewareInterface
             ->setRequest($request)
             ->setResponse($response);
 
+//        return new JsonResponse(app('clockwork.flarum')->count);
+
         return app('clockwork')
             ->usePsrMessage($request, $response)
             ->requestProcessed();
