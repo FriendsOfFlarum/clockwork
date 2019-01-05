@@ -1,0 +1,38 @@
+{
+  "name": "reflar/clockwork",
+  "description": "Debug your Flarum forum with Clockwork",
+  "keywords": [
+    "flarum"
+  ],
+  "type": "flarum-extension",
+  "license": "MIT",
+  "require": {
+    "flarum/core": "^0.1.0-beta.8",
+    "itsgoingd/clockwork": "^3.1.2"
+  },
+  "authors": [
+    {
+      "name": "David Sevilla Martín",
+      "email": "david.s@redevs.org",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Reflar\\Clockwork\\": "src/"
+    }
+  },
+  "extra": {
+    "flarum-extension": {
+      "title": "ReFlar Clockwork",
+      "icon": {
+        "name": "fas fa-terminal",
+        "backgroundColor": "#263238",
+        "color": "#FFF"
+      }
+    },
+    "flagrow": {
+      "discuss": ""
+    }
+  }
+}
