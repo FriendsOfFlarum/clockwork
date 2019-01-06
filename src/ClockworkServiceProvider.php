@@ -3,6 +3,7 @@
 namespace Reflar\Clockwork;
 
 
+use Clockwork\Authentication\SimpleAuthenticator;
 use Clockwork\DataSource\EloquentDataSource;
 use Clockwork\DataSource\LaravelCacheDataSource;
 use Clockwork\DataSource\LaravelEventsDataSource;
@@ -11,7 +12,9 @@ use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Request\Log;
 use Clockwork\Support\Laravel\ClockworkSupport;
 use Clockwork\Support\Vanilla\Clockwork;
+use Flarum\Group\Group;
 use Illuminate\Support\ServiceProvider;
+use Reflar\Clockwork\Clockwork\FlarumAuthenticator;
 use Reflar\Clockwork\Clockwork\FlarumDataSource;
 
 class ClockworkServiceProvider extends ServiceProvider
@@ -28,6 +31,11 @@ class ClockworkServiceProvider extends ServiceProvider
 
         $this->app->singleton('clockwork.support', function ($app) {
             return new ClockworkSupport($app);
+        });
+
+        $this->app->singleton('clockwork.authenticator', function () {
+            return new FlarumAuthenticator(Group::ADMINISTRATOR_ID);
+//            return new SimpleAuthenticator('hello');
         });
 
         $this->app->singleton('clockwork.log', function () {
@@ -71,6 +79,8 @@ class ClockworkServiceProvider extends ServiceProvider
             $clockwork = Clockwork::init([
                 'enable' => true,
             ]);
+
+            $clockwork->setAuthenticator($app['clockwork.authenticator']);
 
             $clockwork
                 ->addDataSource(new MonologDataSource($app['log']))

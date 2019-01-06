@@ -29,6 +29,7 @@ return [
             app('clockwork.flarum')->addDocumentData($document);
         }),
     (new Extend\Routes('forum'))
+        ->post('/__clockwork/auth', 'reflar.clockwork.auth', Controllers\ClockworkAuthController::class)
         ->get('/__clockwork/{request:.+}', 'reflar.clockwork', Controllers\ClockworkController::class),
 //    (new Extend\Frontend('admin'))
 //        ->js(__DIR__.'/js/dist/admin.js')

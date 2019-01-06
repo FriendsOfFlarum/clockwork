@@ -11,6 +11,7 @@ use Clockwork\Request\UserData;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -111,11 +112,15 @@ class FlarumDataSource extends  DataSource
     public function listenToEvents()
     {
         $this->app['events']->listen('clockwork.controller.start', function () {
-            $this->timeline->startEvent('controller', 'Controller running.');
+            $this->timeline->startEvent('controller', 'Request processing');
         });
 
         $this->app['events']->listen('clockwork.controller.end', function () {
             $this->timeline->endEvent('controller');
+        });
+
+        $this->app['events']->listen('clockwork.running.end', function () {
+            $this->timeline->endEvent('running');
         });
 
         $this->app['events']->listen('composing:*', function ($view, $data = null) {
@@ -144,18 +149,12 @@ class FlarumDataSource extends  DataSource
      */
     public function listenToEarlyEvents()
     {
-        $this->timeline->startEvent('total', 'Total execution time.', 'start');
-        $this->timeline->startEvent('initialisation', 'Application initialisation.', 'start');
-
-        $this->app->booting(function () {
-            $this->timeline->endEvent('initialisation');
-            $this->timeline->startEvent('boot', 'Framework booting.');
-            $this->timeline->startEvent('run', 'Framework running.');
-        });
+        $this->timeline->startEvent('total', 'Total execution time', 'start');
+        $this->timeline->startEvent('booting', 'Application booting', 'start');
 
         $this->app->booted(function () {
-            $this->timeline->endEvent('initialisation');
-            $this->timeline->endEvent('boot');
+            $this->timeline->endEvent('booting');
+            $this->timeline->startEvent('running', 'Application running');
         });
 
         $this->count = [];
@@ -192,6 +191,7 @@ class FlarumDataSource extends  DataSource
     }
 
     public function addDocumentData(Document $document) {
+        $this->timeline->endEvent('controller');
         $this->timeline->startEvent('clockwork.flarum', 'Clockwork');
 
         /**
@@ -260,5 +260,11 @@ class FlarumDataSource extends  DataSource
                 ->sortBy('Count', SORT_REGULAR, true)
                 ->toArray()
         );
+    }
+
+    public function authenticate(RequestInterface $request) {
+        $authenticator = $this->app['clockwork']->getAuthenticator();
+
+        return $authenticator->check($request->getHeader('X-Clockwork-Auth'));
     }
 }

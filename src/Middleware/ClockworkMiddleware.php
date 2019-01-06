@@ -28,6 +28,7 @@ class ClockworkMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        app('events')->fire('clockwork.running.end');
         app('events')->fire('clockwork.controller.start');
 
         $response = $handler->handle($request);
@@ -37,8 +38,6 @@ class ClockworkMiddleware implements MiddlewareInterface
         app('clockwork.flarum')
             ->setRequest($request)
             ->setResponse($response);
-
-//        return new JsonResponse(app('clockwork.flarum')->count);
 
         return app('clockwork')
             ->usePsrMessage($request, $response)

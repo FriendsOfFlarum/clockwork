@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: david
- * Date: 1/3/19
- * Time: 7:49 PM
- */
 
 namespace Reflar\Clockwork\Controllers;
-
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,6 +17,13 @@ class ClockworkController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $authenticator = app('clockwork')->getAuthenticator();
+        $authenticated = $authenticator->check($request->getHeaderLine('X-Clockwork-Auth'));
+
+        if ($authenticated !== true) {
+            return new JsonResponse([ 'message' => $authenticated, 'requires' => $authenticator->requires() ], 403);
+        }
+
         return new JsonResponse(
             app('clockwork')->getMetadata($request->getQueryParams()['request'])
         );
