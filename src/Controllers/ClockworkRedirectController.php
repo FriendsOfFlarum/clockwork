@@ -5,9 +5,9 @@ namespace Reflar\Clockwork\Controllers;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 
-class ClockworkAuthController implements RequestHandlerInterface
+class ClockworkRedirectController implements RequestHandlerInterface
 {
 
     /**
@@ -17,10 +17,6 @@ class ClockworkAuthController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $token = app('clockwork.authenticator')->attempt(
-            [ 'actor' => $request->getAttribute('actor') ]
-        );
-
-        return new JsonResponse([ 'token' => $token ], $token ? 200 : 403);
+        return new RedirectResponse(app()->url('__clockwork/app'));
     }
 }

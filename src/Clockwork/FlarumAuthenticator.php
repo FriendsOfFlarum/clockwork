@@ -16,25 +16,18 @@ class FlarumAuthenticator implements AuthenticatorInterface
 
     public function attempt(array $credentials)
     {
-        $user = User::where('username', $credentials['username'])
-            ->orWhere('email', $credentials['username'])->first();
-
-        if ($user == null ||
-            !$user->checkPassword($credentials['password']) ||
-            !$user->groups->contains($this->groupId)) {
-            return false;
-        };
-
-        return $user->password;
+        return true;
     }
-    public function check($token)
+
+    public function check($request)
     {
-        $user = User::where('password', $token)->first();
+        $user = $request->getAttribute('actor');
 
         return $user != null ? $user->groups->contains($this->groupId) : false;
     }
+
     public function requires()
     {
-        return [ static::REQUIRES_USERNAME, static::REQUIRES_PASSWORD ];
+        return [];
     }
 }

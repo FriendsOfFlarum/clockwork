@@ -265,6 +265,6 @@ class FlarumDataSource extends  DataSource
     public function authenticate(RequestInterface $request) {
         $authenticator = $this->app['clockwork']->getAuthenticator();
 
-        return $authenticator->check($request->getHeader('X-Clockwork-Auth'));
+        return $authenticator->check($request);
     }
 }

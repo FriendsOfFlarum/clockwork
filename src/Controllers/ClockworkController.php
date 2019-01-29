@@ -2,6 +2,7 @@
 
 namespace Reflar\Clockwork\Controllers;
 
+use Flarum\Http\Exception\RouteNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -17,15 +18,20 @@ class ClockworkController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $authenticator = app('clockwork')->getAuthenticator();
-        $authenticated = $authenticator->check($request->getHeaderLine('X-Clockwork-Auth'));
+        $authenticator = app('clockwork.authenticator');
+        $authenticated = $authenticator->check($request);
 
-        if ($authenticated !== true) {
-            return new JsonResponse([ 'message' => $authenticated, 'requires' => $authenticator->requires() ], 403);
+        if (!$authenticated) {
+            return new JsonResponse([
+                'message' => app('translator')->trans('core.lib.error.permission_denied_message'),
+                'requires' => $authenticator->requires()
+            ], 403);
         }
 
-        return new JsonResponse(
-            app('clockwork')->getMetadata($request->getQueryParams()['request'])
-        );
+        $metadata = app('clockwork')->getMetadata($request->getQueryParams()['request']);
+
+        if ($metadata == null) throw new RouteNotFoundException;
+
+        return new JsonResponse($metadata);
     }
 }
