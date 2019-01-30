@@ -29,7 +29,7 @@ return [
             app('clockwork.flarum')->addDocumentData($document);
         }),
     (new Extend\Routes('forum'))
-        ->get('/__clockwork', 'reflar.clockwork.app', Controllers\ClockworkRedirectController::class)
+        ->get('/__clockwork[/]', 'reflar.clockwork.app', Controllers\ClockworkRedirectController::class)
         ->get('/__clockwork/app', 'reflar.clockwork.app', Controllers\ClockworkWebController::class)
         ->get('/__clockwork/assets/{path:.+}', 'reflar.clockwork.asset', Controllers\ClockworkAssetController::class)
         ->post('/__clockwork/auth', 'reflar.clockwork.auth', Controllers\ClockworkAuthController::class)
