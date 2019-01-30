@@ -10,7 +10,6 @@ use Zend\Diactoros\Response\JsonResponse;
 
 class ClockworkController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
@@ -23,15 +22,16 @@ class ClockworkController implements RequestHandlerInterface
 
         if (!$authenticated) {
             return new JsonResponse([
-                'message' => app('translator')->trans('core.lib.error.permission_denied_message'),
-                'requires' => $authenticator->requires()
+                'message'  => app('translator')->trans('core.lib.error.permission_denied_message'),
+                'requires' => $authenticator->requires(),
             ], 403);
         }
 
         $metadata = app('clockwork')->getMetadata($request->getQueryParams()['request']);
 
-        if ($metadata == null) throw new RouteNotFoundException;
-
+        if ($metadata == null) {
+            throw new RouteNotFoundException();
+        }
         return new JsonResponse($metadata);
     }
 }

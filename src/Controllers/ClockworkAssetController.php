@@ -13,7 +13,6 @@ use Zend\Diactoros\Stream;
 
 class ClockworkAssetController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
@@ -25,14 +24,15 @@ class ClockworkAssetController implements RequestHandlerInterface
             throw new PermissionDeniedException();
         }
 
-        $asset = (new Web)->asset('assets/'.$request->getQueryParams()['path']);
+        $asset = (new Web())->asset('assets/'.$request->getQueryParams()['path']);
 
-        if ($asset == null) throw new RouteNotFoundException;
-
+        if ($asset == null) {
+            throw new RouteNotFoundException();
+        }
         return new Response(
             new Stream($asset['path']),
             200,
-            [ 'Content-Type' => $asset['mime'] ]
+            ['Content-Type' => $asset['mime']]
         );
     }
 }

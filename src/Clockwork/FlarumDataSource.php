@@ -8,32 +8,31 @@ use Clockwork\Request\Log;
 use Clockwork\Request\Request;
 use Clockwork\Request\Timeline;
 use Clockwork\Request\UserData;
-use Flarum\Extension\ExtensionManager;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class FlarumDataSource extends  DataSource
+class FlarumDataSource extends DataSource
 {
     /**
-     * Laravel application from which the data is retrieved
+     * Laravel application from which the data is retrieved.
      */
     protected $app;
 
     /**
-     * Log data structure
+     * Log data structure.
      */
     protected $log;
 
     /**
-     * Timeline data structure
+     * Timeline data structure.
      */
     protected $timeline;
 
     /**
-     * Timeline data structure for views data
+     * Timeline data structure for views data.
      */
     protected $views;
 
@@ -53,22 +52,22 @@ class FlarumDataSource extends  DataSource
     public $count;
 
     /**
-     * Create a new data source, takes Laravel application instance as an argument
+     * Create a new data source, takes Laravel application instance as an argument.
      */
     public function __construct(Application $app)
     {
         $this->app = $app;
 
         $this->timeline = new Timeline();
-        $this->views    = new Timeline();
+        $this->views = new Timeline();
     }
 
     /**
-     * Adds request method, uri, controller, headers, response status, timeline data and log entries to the request
+     * Adds request method, uri, controller, headers, response status, timeline data and log entries to the request.
      */
     public function resolve(Request $request)
     {
-        $request->sessionData    = $this->getSessionData();
+        $request->sessionData = $this->getSessionData();
 
         $this->resolveAuthenticatedUser($request);
 
@@ -76,7 +75,7 @@ class FlarumDataSource extends  DataSource
 
         $this->timeline->endEvent('clockwork.flarum');
 
-        $request->viewsData    = $this->views->finalize();
+        $request->viewsData = $this->views->finalize();
 
         return $request;
     }
@@ -85,17 +84,21 @@ class FlarumDataSource extends  DataSource
     public function setLog(Log $log)
     {
         $this->log = $log;
+
         return $this;
     }
 
     public function setResponse(ResponseInterface $response)
     {
         $this->response = $response;
+
         return $this;
     }
 
-    public function setRequest(ServerRequestInterface $request) {
+    public function setRequest(ServerRequestInterface $request)
+    {
         $this->request = $request;
+
         return $this;
     }
 
@@ -103,11 +106,12 @@ class FlarumDataSource extends  DataSource
     public function collectViews($collectViews = true)
     {
         $this->collectViews = $collectViews;
+
         return $this;
     }
 
     /**
-     * Hook up callbacks for various Laravel events, providing information for timeline and log entries
+     * Hook up callbacks for various Laravel events, providing information for timeline and log entries.
      */
     public function listenToEvents()
     {
@@ -124,7 +128,9 @@ class FlarumDataSource extends  DataSource
         });
 
         $this->app['events']->listen('composing:*', function ($view, $data = null) {
-            if (! $this->collectViews) return;
+            if (!$this->collectViews) {
+                return;
+            }
 
             if (is_string($view) && is_array($data)) { // Laravel 5.4 wildcard event
                 $view = $data[0];
@@ -135,17 +141,17 @@ class FlarumDataSource extends  DataSource
             unset($data['__env']);
 
             $this->views->addEvent(
-                'view ' . $view->getName(),
+                'view '.$view->getName(),
                 'Rendering a view',
                 $time,
                 $time,
-                [ 'name' => $view->getName(), 'data' => (new Serializer)->normalize($data) ]
+                ['name' => $view->getName(), 'data' => (new Serializer())->normalize($data)]
             );
         });
     }
 
     /**
-     * Hook up callbacks for some Laravel events, that we need to register as soon as possible
+     * Hook up callbacks for some Laravel events, that we need to register as soon as possible.
      */
     public function listenToEarlyEvents()
     {
@@ -167,35 +173,40 @@ class FlarumDataSource extends  DataSource
     }
 
     /**
-     * Return session data (replace unserializable items, attempt to remove passwords)
+     * Return session data (replace unserializable items, attempt to remove passwords).
      */
     protected function getSessionData()
     {
         $session = $this->request->getattribute('session');
 
-        return $this->removePasswords((new Serializer)->normalizeEach($session->all()));
+        return $this->removePasswords((new Serializer())->normalizeEach($session->all()));
     }
 
     // Add authenticated user data to the request
     protected function resolveAuthenticatedUser(Request $request)
     {
-        if (! ($user = $this->request->getattribute('actor'))) return;
-        if (! isset($user->email) || ! isset($user->id)) return;
+        if (!($user = $this->request->getattribute('actor'))) {
+            return;
+        }
+        if (!isset($user->email) || !isset($user->id)) {
+            return;
+        }
 
         $request->setAuthenticatedUser($user->email, $user->id, [
             'email' => $user->email,
-            'name'  => $user->username
+            'name'  => $user->username,
         ]);
 
         $this->request->getServerParams();
     }
 
-    public function addDocumentData(Document $document) {
+    public function addDocumentData(Document $document)
+    {
         $this->timeline->endEvent('controller');
         $this->timeline->startEvent('clockwork.flarum', 'Clockwork');
 
         /**
-         * @var $data UserData
+         * @var UserData
          */
         $data = app('clockwork')->userData('Flarum');
 
@@ -203,7 +214,7 @@ class FlarumDataSource extends  DataSource
 
         $data->counters([
             'Installed Extensions' => app('flarum.extensions')->getExtensions()->count(),
-            'Enabled Extensions' => sizeof(app('flarum.extensions')->getEnabledExtensions()),
+            'Enabled Extensions'   => count(app('flarum.extensions')->getEnabledExtensions()),
         ]);
 
         $data->table(null, [
@@ -262,7 +273,8 @@ class FlarumDataSource extends  DataSource
         );
     }
 
-    public function authenticate(RequestInterface $request) {
+    public function authenticate(RequestInterface $request)
+    {
         $authenticator = $this->app['clockwork']->getAuthenticator();
 
         return $authenticator->check($request);

@@ -13,7 +13,6 @@ use Zend\Diactoros\Stream;
 
 class ClockworkWebController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
@@ -25,12 +24,12 @@ class ClockworkWebController implements RequestHandlerInterface
             throw new PermissionDeniedException();
         }
 
-        if ($asset = (new Web)->asset('app.html')) {
+        if ($asset = (new Web())->asset('app.html')) {
             return new Response(
                 new Stream($asset['path'])
             );
         }
 
-        throw new RouteNotFoundException;
+        throw new RouteNotFoundException();
     }
 }

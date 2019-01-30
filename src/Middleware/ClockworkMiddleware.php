@@ -18,7 +18,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ClockworkMiddleware implements MiddlewareInterface
 {
-
     /**
      * Process an incoming server request.
      *
@@ -28,7 +27,9 @@ class ClockworkMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false) return $handler->handle($request);
+        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false) {
+            return $handler->handle($request);
+        }
 
         app('events')->fire('clockwork.running.end');
         app('events')->fire('clockwork.controller.start');
@@ -39,9 +40,11 @@ class ClockworkMiddleware implements MiddlewareInterface
 
         $uri = $request->getUri();
 
-        if ($request->getAttribute('request-handler') == 'flarum.api.middleware') $request->withUri(
+        if ($request->getAttribute('request-handler') == 'flarum.api.middleware') {
+            $request->withUri(
             $uri->withPath('/api'.$uri->getPath())
         );
+        }
 
         app('clockwork.flarum')
             ->setRequest($request)

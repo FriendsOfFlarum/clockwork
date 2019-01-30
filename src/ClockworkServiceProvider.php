@@ -2,7 +2,6 @@
 
 namespace Reflar\Clockwork;
 
-
 use Clockwork\DataSource\EloquentDataSource;
 use Clockwork\DataSource\LaravelCacheDataSource;
 use Clockwork\DataSource\LaravelEventsDataSource;
@@ -18,16 +17,16 @@ use Reflar\Clockwork\Clockwork\FlarumDataSource;
 
 class ClockworkServiceProvider extends ServiceProvider
 {
-
-    public function boot() {
+    public function boot()
+    {
         $this->app['clockwork.eloquent']->listenToEvents();
         $this->app['clockwork.cache']->listenToEvents();
         $this->app['clockwork.flarum']->listenToEvents();
         $this->app['clockwork.events']->listenToEvents();
     }
 
-    public function register() {
-
+    public function register()
+    {
         $this->app->singleton('clockwork.support', function ($app) {
             return new ClockworkSupport($app);
         });
@@ -37,7 +36,7 @@ class ClockworkServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('clockwork.log', function () {
-            return (new Log)->collectStackTraces();
+            return (new Log())->collectStackTraces();
         });
 
         $this->app->singleton('clockwork.eloquent', function ($app) {
@@ -59,7 +58,7 @@ class ClockworkServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('clockwork.xdebug', function () {
-            return new XdebugDataSource;
+            return new XdebugDataSource();
         });
 
         $this->app->singleton('clockwork.flarum', function ($app) {
@@ -72,7 +71,7 @@ class ClockworkServiceProvider extends ServiceProvider
 
         $this->app->singleton('clockwork', function ($app) {
             /**
-             * @var $clockwork Clockwork
+             * @var Clockwork
              */
             $clockwork = Clockwork::init([
                 'enable' => true,

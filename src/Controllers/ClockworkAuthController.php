@@ -9,7 +9,6 @@ use Zend\Diactoros\Response\JsonResponse;
 
 class ClockworkAuthController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
@@ -18,9 +17,9 @@ class ClockworkAuthController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $token = app('clockwork.authenticator')->attempt(
-            [ 'actor' => $request->getAttribute('actor') ]
+            ['actor' => $request->getAttribute('actor')]
         );
 
-        return new JsonResponse([ 'token' => $token ], $token ? 200 : 403);
+        return new JsonResponse(['token' => $token], $token ? 200 : 403);
     }
 }

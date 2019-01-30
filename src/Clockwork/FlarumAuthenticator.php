@@ -3,7 +3,6 @@
 namespace Reflar\Clockwork\Clockwork;
 
 use Clockwork\Authentication\AuthenticatorInterface;
-use Flarum\User\User;
 
 class FlarumAuthenticator implements AuthenticatorInterface
 {

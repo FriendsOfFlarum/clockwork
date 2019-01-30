@@ -39,7 +39,9 @@ return [
 //        ->css(__DIR__.'/resources/less/admin.less'),
 //    new Extend\Locales(__DIR__ . '/resources/locale'),
     function (Application $app, Dispatcher $events) {
-        if ($app->runningInConsole()) return;
+        if ($app->runningInConsole()) {
+            return;
+        }
 
         $app->register(ClockworkServiceProvider::class);
 
@@ -48,5 +50,5 @@ return [
         });
 
         $app['clockwork.flarum']->listenToEarlyEvents();
-    }
+    },
 ];

@@ -9,7 +9,6 @@ use Zend\Diactoros\Response\RedirectResponse;
 
 class ClockworkRedirectController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
