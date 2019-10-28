@@ -127,27 +127,27 @@ class FlarumDataSource extends DataSource
             $this->timeline->endEvent('running');
         });
 
-        $this->app['events']->listen('composing:*', function ($view, $data = null) {
-            if (!$this->collectViews) {
-                return;
-            }
-
-            if (is_string($view) && is_array($data)) { // Laravel 5.4 wildcard event
-                $view = $data[0];
-            }
-
-            $time = microtime(true);
-            $data = $view->getData();
-            unset($data['__env']);
-
-            $this->views->addEvent(
-                'view '.$view->getName(),
-                'Rendering a view',
-                $time,
-                $time,
-                ['name' => $view->getName(), 'data' => (new Serializer())->normalize($data)]
-            );
-        });
+//        $this->app['events']->listen('composing:*', function ($view, $data = null) {
+//            if (!$this->collectViews) {
+//                return;
+//            }
+//
+//            if (is_string($view) && is_array($data)) { // Laravel 5.4 wildcard event
+//                $view = $data[0];
+//            }
+//
+//            $time = microtime(true);
+//            $data = $view->getData();
+//            unset($data['__env']);
+//
+//            $this->views->addEvent(
+//                'view '.$view->getName(),
+//                'Rendering a view',
+//                $time,
+//                $time,
+//                ['name' => $view->getName(), 'data' => (new Serializer())->normalize($data)]
+//            );
+//        });
     }
 
     /**
