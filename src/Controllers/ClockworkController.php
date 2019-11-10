@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\TextResponse;
 
 class ClockworkController implements RequestHandlerInterface
 {
@@ -27,11 +28,13 @@ class ClockworkController implements RequestHandlerInterface
             ], 403);
         }
 
-        $metadata = app('clockwork')->getMetadata($request->getQueryParams()['request']);
+        $req = $request->getQueryParams()['request'];
+        $metadata = app('clockwork')->getMetadata($req);
 
         if ($metadata == null) {
             throw new RouteNotFoundException();
         }
+
         return new JsonResponse($metadata);
     }
 }

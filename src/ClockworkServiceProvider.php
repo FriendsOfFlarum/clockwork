@@ -60,7 +60,6 @@ class ClockworkServiceProvider extends ServiceProvider
 
         $this->app->singleton('clockwork.flarum', function ($app) {
             return (new FlarumDataSource($app))
-                ->collectViews()
                 ->setLog($app['clockwork.log']);
         });
 

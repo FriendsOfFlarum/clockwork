@@ -19,8 +19,6 @@ use Illuminate\Events\Dispatcher;
 
 return [
     (new Extend\Frontend('forum'))
-        ->js(__DIR__.'/js/dist/forum.js')
-        ->css(__DIR__.'/resources/less/forum.less')
         ->content(function (Document $document) {
             app('clockwork.flarum')->addDocumentData($document);
         }),
@@ -31,13 +29,9 @@ return [
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'reflar.clockwork.app', Controllers\ClockworkRedirectController::class)
         ->get('/__clockwork/app', 'reflar.clockwork.app', Controllers\ClockworkWebController::class)
-        ->get('/__clockwork/assets/{path:.+}', 'reflar.clockwork.asset', Controllers\ClockworkAssetController::class)
+        ->get('/__clockwork/{folder:(?:css|img|js)}/{path:.+}', 'reflar.clockwork.asset', Controllers\ClockworkAssetController::class)
         ->post('/__clockwork/auth', 'reflar.clockwork.auth', Controllers\ClockworkAuthController::class)
         ->get('/__clockwork/{request:.+}', 'reflar.clockwork.request', Controllers\ClockworkController::class),
-//    (new Extend\Frontend('admin'))
-//        ->js(__DIR__.'/js/dist/admin.js')
-//        ->css(__DIR__.'/resources/less/admin.less'),
-//    new Extend\Locales(__DIR__ . '/resources/locale'),
     function (Application $app, Dispatcher $events) {
         if ($app->runningInConsole()) {
             return;

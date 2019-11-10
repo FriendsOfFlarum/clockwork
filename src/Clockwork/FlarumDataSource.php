@@ -32,14 +32,6 @@ class FlarumDataSource extends DataSource
     protected $timeline;
 
     /**
-     * Timeline data structure for views data.
-     */
-    protected $views;
-
-    // Whether we should collect views
-    protected $collectViews = true;
-
-    /**
      * @var ServerRequestInterface
      */
     protected $request;
@@ -59,7 +51,6 @@ class FlarumDataSource extends DataSource
         $this->app = $app;
 
         $this->timeline = new Timeline();
-        $this->views = new Timeline();
     }
 
     /**
@@ -74,8 +65,6 @@ class FlarumDataSource extends DataSource
         $request->timelineData = $this->timeline->finalize($request->time);
 
         $this->timeline->endEvent('clockwork.flarum');
-
-        $request->viewsData = $this->views->finalize();
 
         return $request;
     }
@@ -102,14 +91,6 @@ class FlarumDataSource extends DataSource
         return $this;
     }
 
-    // Enable or disable collecting views
-    public function collectViews($collectViews = true)
-    {
-        $this->collectViews = $collectViews;
-
-        return $this;
-    }
-
     /**
      * Hook up callbacks for various Laravel events, providing information for timeline and log entries.
      */
@@ -126,28 +107,6 @@ class FlarumDataSource extends DataSource
         $this->app['events']->listen('clockwork.running.end', function () {
             $this->timeline->endEvent('running');
         });
-
-//        $this->app['events']->listen('composing:*', function ($view, $data = null) {
-//            if (!$this->collectViews) {
-//                return;
-//            }
-//
-//            if (is_string($view) && is_array($data)) { // Laravel 5.4 wildcard event
-//                $view = $data[0];
-//            }
-//
-//            $time = microtime(true);
-//            $data = $view->getData();
-//            unset($data['__env']);
-//
-//            $this->views->addEvent(
-//                'view '.$view->getName(),
-//                'Rendering a view',
-//                $time,
-//                $time,
-//                ['name' => $view->getName(), 'data' => (new Serializer())->normalize($data)]
-//            );
-//        });
     }
 
     /**
@@ -206,7 +165,7 @@ class FlarumDataSource extends DataSource
         $this->timeline->startEvent('clockwork.flarum', 'Clockwork');
 
         /**
-         * @var UserData
+         * @var $data UserData
          */
         $data = app('clockwork')->userData('Flarum');
 
@@ -220,7 +179,7 @@ class FlarumDataSource extends DataSource
         $data->table(null, [
             ['Versions' => 'Flarum', null => app()->version()],
             ['PHP', PHP_VERSION],
-            ['MySQL', app('flarum.db')->selectOne('select version() as version')->version],
+            ['MySQL', @$document->payload['mysqlVersion'] ?? app('flarum.db')->selectOne('select version() as version')->version],
         ]);
 
         $data->table(null, [
@@ -232,45 +191,53 @@ class FlarumDataSource extends DataSource
             ['Title', $document->title],
         ]);
 
-        $data->table(
-            null,
-            collect($document->meta)
-                ->map(function ($value, $key) {
-                    return ['Meta' => $key, null => $value];
-                })
-                ->toArray()
-        );
+        if (!empty($document->meta)) {
+            $data->table(
+                null,
+                collect($document->meta)
+                    ->map(function ($value, $key) {
+                        return ['Meta' => $key, null => $value];
+                    })
+                    ->toArray()
+            );
+        }
 
-        $data->table(
-            null,
-            collect($document->head)
-                ->map(function ($value) {
-                    return ['Head' => $value];
-                })
-                ->toArray()
-        );
+        if (!empty($document->head)) {
+            $data->table(
+                null,
+                collect($document->head)
+                    ->map(function ($value) {
+                        return ['Head' => $value];
+                    })
+                    ->toArray()
+            );
+        }
 
-        $data->table(
-            null,
-            collect($document->payload)
-                ->filter(function ($value, $key) {
-                    return $key !== 'resources';
-                })
-                ->map(function ($value, $key) {
-                    return ['Payload' => $key, null => $value];
-                })
-                ->toArray()
-        );
+        if (!empty($document->payload)) {
+            $data->table(
+                null,
+                collect($document->payload)
+                    ->filter(function ($value, $key) {
+                        return $key !== 'resources';
+                    })
+                    ->map(function ($value, $key) {
+                        return ['Payload' => $key, null => $value];
+                    })
+                    ->toArray()
+            );
+        }
 
-        $data->table(
-            null,
-            collect($this->count)
-                ->map(function ($value, $key) {
-                    return ['Events' => $key, 'Count' => $value];
-                })
-                ->sortBy('Count', SORT_REGULAR, true)
-                ->toArray()
-        );
+        if (!empty($this->count)) {
+            $data->table(
+                null,
+                collect($this->count)
+                    ->map(function ($value, $key) {
+                        return ['Events' => $key, 'Count' => $value];
+                    })
+                    ->sortBy('Count', SORT_REGULAR, true)
+                    ->toArray()
+            );
+        }
     }
 
     public function authenticate(RequestInterface $request)

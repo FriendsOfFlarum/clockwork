@@ -24,15 +24,19 @@ class ClockworkAssetController implements RequestHandlerInterface
             throw new PermissionDeniedException();
         }
 
-        $asset = (new Web())->asset('assets/'.$request->getQueryParams()['path']);
+        $asset = (new Web())->asset($request->getQueryParams()['folder'] .'/'.$request->getQueryParams()['path']);
 
         if ($asset == null) {
             throw new RouteNotFoundException();
         }
+
+        $path = $asset['path'];
+        $mime = strpos($path, 'img'.DIRECTORY_SEPARATOR) !== false ? 'image' : $asset['mime'];
+
         return new Response(
             new Stream($asset['path']),
             200,
-            ['Content-Type' => $asset['mime']]
+            ['Content-Type' => $mime]
         );
     }
 }
