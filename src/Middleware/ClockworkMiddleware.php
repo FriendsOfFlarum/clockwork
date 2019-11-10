@@ -38,12 +38,13 @@ class ClockworkMiddleware implements MiddlewareInterface
 
         app('events')->fire('clockwork.controller.end');
 
+        $requestHandler = $request->getAttribute('request-handler');
         $uri = $request->getUri();
 
-        if ($request->getAttribute('request-handler') == 'flarum.api.middleware') {
-            $request->withUri(
-            $uri->withPath('/api'.$uri->getPath())
-        );
+        if ($requestHandler == 'flarum.api.middleware') {
+            $request = $request->withUri($uri->withPath('/api'.$uri->getPath()));
+        } else if ($requestHandler == 'flarum.admin.middleware') {
+            $request = $request->withUri($uri->withPath('/admin'.$uri->getPath()));
         }
 
         app('clockwork.flarum')
