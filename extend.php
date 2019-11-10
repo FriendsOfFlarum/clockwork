@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of reflar/clockwork.
+ * This file is part of fof/clockwork.
  *
- * Copyright (c) 2018 ReFlar.
+ * Copyright (c) 2019 FriendsOfFlarum.
  *
- * For the full copyright and license information, please view the LICENSE.md
+ * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Reflar\Clockwork;
+namespace FoF\Clockwork;
 
 use Flarum\Event\ConfigureMiddleware;
 use Flarum\Extend;
@@ -27,11 +27,11 @@ return [
             app('clockwork.flarum')->addDocumentData($document);
         }),
     (new Extend\Routes('forum'))
-        ->get('/__clockwork[/]', 'reflar.clockwork.app', Controllers\ClockworkRedirectController::class)
-        ->get('/__clockwork/app', 'reflar.clockwork.app', Controllers\ClockworkWebController::class)
-        ->get('/__clockwork/{folder:(?:css|img|js)}/{path:.+}', 'reflar.clockwork.asset', Controllers\ClockworkAssetController::class)
-        ->post('/__clockwork/auth', 'reflar.clockwork.auth', Controllers\ClockworkAuthController::class)
-        ->get('/__clockwork/{request:.+}', 'reflar.clockwork.request', Controllers\ClockworkController::class),
+        ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)
+        ->get('/__clockwork/app', 'fof.clockwork.app', Controllers\ClockworkWebController::class)
+        ->get('/__clockwork/{folder:(?:css|img|js)}/{path:.+}', 'fof.clockwork.asset', Controllers\ClockworkAssetController::class)
+        ->post('/__clockwork/auth', 'fof.clockwork.auth', Controllers\ClockworkAuthController::class)
+        ->get('/__clockwork/{request:.+}', 'fof.clockwork.request', Controllers\ClockworkController::class),
     function (Application $app, Dispatcher $events) {
         if ($app->runningInConsole()) {
             return;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Reflar\Clockwork\Clockwork;
+namespace FoF\Clockwork\Clockwork;
 
 use Clockwork\DataSource\DataSource;
 use Clockwork\Helpers\Serializer;

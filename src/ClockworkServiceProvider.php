@@ -1,6 +1,6 @@
 <?php
 
-namespace Reflar\Clockwork;
+namespace FoF\Clockwork;
 
 use Clockwork\DataSource\EloquentDataSource;
 use Clockwork\DataSource\LaravelCacheDataSource;
@@ -12,8 +12,8 @@ use Clockwork\Support\Laravel\ClockworkSupport;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Group\Group;
 use Illuminate\Support\ServiceProvider;
-use Reflar\Clockwork\Clockwork\FlarumAuthenticator;
-use Reflar\Clockwork\Clockwork\FlarumDataSource;
+use FoF\Clockwork\Clockwork\FlarumAuthenticator;
+use FoF\Clockwork\Clockwork\FlarumDataSource;
 
 class ClockworkServiceProvider extends ServiceProvider
 {

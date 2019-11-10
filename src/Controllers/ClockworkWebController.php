@@ -1,6 +1,6 @@
 <?php
 
-namespace Reflar\Clockwork\Controllers;
+namespace FoF\Clockwork\Controllers;
 
 use Clockwork\Web\Web;
 use Flarum\Http\Exception\RouteNotFoundException;

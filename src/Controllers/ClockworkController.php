@@ -1,13 +1,12 @@
 <?php
 
-namespace Reflar\Clockwork\Controllers;
+namespace FoF\Clockwork\Controllers;
 
 use Flarum\Http\Exception\RouteNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
-use Zend\Diactoros\Response\TextResponse;
 
 class ClockworkController implements RequestHandlerInterface
 {

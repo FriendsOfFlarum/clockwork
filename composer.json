@@ -1,5 +1,5 @@
 {
-  "name": "reflar/clockwork",
+  "name": "fof/clockwork",
   "description": "Debug your Flarum forum with Clockwork",
   "keywords": [
     "flarum"
@@ -19,16 +19,16 @@
   ],
   "autoload": {
     "psr-4": {
-      "Reflar\\Clockwork\\": "src/"
+      "FoF\\Clockwork\\": "src/"
     }
   },
   "extra": {
     "flarum-extension": {
-      "title": "ReFlar Clockwork",
+      "title": "FoF Clockwork",
       "icon": {
         "name": "fas fa-terminal",
-        "backgroundColor": "#263238",
-        "color": "#FFF"
+        "backgroundColor": "#e74c3c",
+        "color": "#fff"
       }
     },
     "flagrow": {
