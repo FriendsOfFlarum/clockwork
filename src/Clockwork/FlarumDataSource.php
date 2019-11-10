@@ -165,7 +165,7 @@ class FlarumDataSource extends DataSource
         $this->timeline->startEvent('clockwork.flarum', 'Clockwork');
 
         /**
-         * @var $data UserData
+         * @var UserData
          */
         $data = app('clockwork')->userData('Flarum');
 

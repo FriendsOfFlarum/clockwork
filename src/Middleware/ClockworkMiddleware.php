@@ -43,7 +43,7 @@ class ClockworkMiddleware implements MiddlewareInterface
 
         if ($requestHandler == 'flarum.api.middleware') {
             $request = $request->withUri($uri->withPath('/api'.$uri->getPath()));
-        } else if ($requestHandler == 'flarum.admin.middleware') {
+        } elseif ($requestHandler == 'flarum.admin.middleware') {
             $request = $request->withUri($uri->withPath('/admin'.$uri->getPath()));
         }
 

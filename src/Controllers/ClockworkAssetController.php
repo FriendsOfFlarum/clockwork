@@ -24,7 +24,7 @@ class ClockworkAssetController implements RequestHandlerInterface
             throw new PermissionDeniedException();
         }
 
-        $asset = (new Web())->asset($request->getQueryParams()['folder'] .'/'.$request->getQueryParams()['path']);
+        $asset = (new Web())->asset($request->getQueryParams()['folder'].'/'.$request->getQueryParams()['path']);
 
         if ($asset == null) {
             throw new RouteNotFoundException();

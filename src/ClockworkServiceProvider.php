@@ -11,9 +11,9 @@ use Clockwork\Request\Log;
 use Clockwork\Support\Laravel\ClockworkSupport;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Group\Group;
-use Illuminate\Support\ServiceProvider;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
+use Illuminate\Support\ServiceProvider;
 
 class ClockworkServiceProvider extends ServiceProvider
 {

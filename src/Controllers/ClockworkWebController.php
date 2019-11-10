@@ -13,7 +13,6 @@ use Zend\Diactoros\Stream;
 
 class ClockworkWebController implements RequestHandlerInterface
 {
-
     /**
      * Handles a request and produces a response.
      *
