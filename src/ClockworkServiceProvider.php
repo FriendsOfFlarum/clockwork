@@ -36,25 +36,22 @@ class ClockworkServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('clockwork.log', function () {
-            return (new Log())->collectStackTraces();
+            return new Log();
         });
 
         $this->app->singleton('clockwork.eloquent', function ($app) {
-            return (new EloquentDataSource($app['db'], $app['events']))
-                ->collectStackTraces();
+            return new EloquentDataSource($app['db'], $app['events']);
         });
 
         $this->app->singleton('clockwork.cache', function ($app) {
-            return (new LaravelCacheDataSource($app['events']))
-                ->collectStackTraces();
+            return new LaravelCacheDataSource($app['events']);
         });
 
         $this->app->singleton('clockwork.events', function ($app) {
-            return (new LaravelEventsDataSource($app['events'], [
+            return new LaravelEventsDataSource($app['events'], [
                 'Flarum\\\\Event\\\\.+',
                 'Flarum\\\\Api\\\\Event\\\\.+',
-            ]))
-                ->collectStackTraces(false);
+            ]);
         });
 
         $this->app->singleton('clockwork.xdebug', function () {
@@ -70,9 +67,7 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.flarum']->listenToEarlyEvents();
 
         $this->app->singleton('clockwork', function ($app) {
-            /**
-             * @var Clockwork
-             */
+            /** @var Clockwork|\Clockwork\Clockwork $clockwork */
             $clockwork = Clockwork::init([
                 'enable' => true,
             ]);
