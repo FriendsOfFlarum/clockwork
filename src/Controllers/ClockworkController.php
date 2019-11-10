@@ -32,6 +32,7 @@ class ClockworkController implements RequestHandlerInterface
         if ($metadata == null) {
             throw new RouteNotFoundException();
         }
+
         return new JsonResponse($metadata);
     }
 }

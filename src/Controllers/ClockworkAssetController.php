@@ -29,6 +29,7 @@ class ClockworkAssetController implements RequestHandlerInterface
         if ($asset == null) {
             throw new RouteNotFoundException();
         }
+
         return new Response(
             new Stream($asset['path']),
             200,
