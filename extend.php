@@ -20,11 +20,15 @@ use Illuminate\Events\Dispatcher;
 return [
     (new Extend\Frontend('forum'))
         ->content(function (Document $document) {
-            app('clockwork.flarum')->addDocumentData($document);
+            if (app()->bound('clockwork.flarum')) {
+                app('clockwork.flarum')->addDocumentData($document);
+            }
         }),
     (new Extend\Frontend('admin'))
         ->content(function (Document $document) {
-            app('clockwork.flarum')->addDocumentData($document);
+            if (app()->bound('clockwork.flarum')) {
+                app('clockwork.flarum')->addDocumentData($document);
+            }
         }),
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)

@@ -27,7 +27,7 @@ class ClockworkMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false) {
+        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false || !app()->bound('clockwork.flarum')) {
             return $handler->handle($request);
         }
 
