@@ -36,6 +36,10 @@ return [
         ->get('/__clockwork/{folder:(?:css|img|js)}/{path:.+}', 'fof.clockwork.asset', Controllers\ClockworkAssetController::class)
         ->post('/__clockwork/auth', 'fof.clockwork.auth', Controllers\ClockworkAuthController::class)
         ->get('/__clockwork/{request:.+}', 'fof.clockwork.request', Controllers\ClockworkController::class),
+    (new Extend\Middleware('forum'))
+        ->add(Middleware\ClockworkMiddleware::class),
+    (new Extend\Middleware('admin'))
+        ->add(Middleware\ClockworkMiddleware::class),
     function (Application $app, Dispatcher $events) {
         if ($app->runningInConsole()) {
             return;
@@ -43,10 +47,6 @@ return [
 
         $app->register(ClockworkServiceProvider::class);
 
-        $events->listen(ConfigureMiddleware::class, function (ConfigureMiddleware $event) {
-            $event->pipe(app(Middleware\ClockworkMiddleware::class));
-        });
-
         $app['clockwork.flarum']->listenToEarlyEvents();
-    },
+    }
 ];
