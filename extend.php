@@ -11,7 +11,6 @@
 
 namespace FoF\Clockwork;
 
-use Flarum\Event\ConfigureMiddleware;
 use Flarum\Extend;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
@@ -48,5 +47,5 @@ return [
         $app->register(ClockworkServiceProvider::class);
 
         $app['clockwork.flarum']->listenToEarlyEvents();
-    }
+    },
 ];
