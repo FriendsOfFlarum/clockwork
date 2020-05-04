@@ -11,10 +11,10 @@
 
 namespace FoF\Clockwork\Controllers;
 
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\RedirectResponse;
 
 class ClockworkRedirectController implements RequestHandlerInterface
 {

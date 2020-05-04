@@ -14,11 +14,11 @@ namespace FoF\Clockwork\Controllers;
 use Clockwork\Web\Web;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\User\Exception\PermissionDeniedException;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 class ClockworkWebController implements RequestHandlerInterface
 {

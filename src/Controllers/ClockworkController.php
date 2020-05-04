@@ -12,10 +12,10 @@
 namespace FoF\Clockwork\Controllers;
 
 use Flarum\Http\Exception\RouteNotFoundException;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class ClockworkController implements RequestHandlerInterface
 {
