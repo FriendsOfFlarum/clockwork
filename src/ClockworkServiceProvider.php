@@ -78,6 +78,7 @@ class ClockworkServiceProvider extends ServiceProvider
             /** @var Clockwork|\Clockwork\Clockwork $clockwork */
             $clockwork = Clockwork::init([
                 'enable' => true,
+                'storage_files_path' => storage_path('clockwork')
             ]);
 
             $clockwork->setAuthenticator($app['clockwork.authenticator']);
