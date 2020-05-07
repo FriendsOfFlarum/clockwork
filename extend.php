@@ -18,7 +18,7 @@ use FoF\Clockwork\Extend\FileStoragePath;
 use Illuminate\Events\Dispatcher;
 
 return [
-    (new FileStoragePath),
+    (new FileStoragePath()),
     (new Extend\Frontend('forum'))
         ->content(function (Document $document) {
             if (app()->bound('clockwork.flarum')) {
