@@ -14,6 +14,7 @@ namespace FoF\Clockwork\Extend;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extend\LifecycleInterface;
 use Flarum\Extension\Extension;
+use Flarum\Foundation\Paths;
 use Illuminate\Contracts\Container\Container;
 use League\Flysystem\Adapter\Local;
 
@@ -33,7 +34,7 @@ class FileStoragePath implements LifecycleInterface, ExtenderInterface
 
     protected function storage(): Local
     {
-        return new Local(storage_path());
+        return new Local(app(Paths::class)->storage);
     }
 
     public function onDisable(Container $container, Extension $extension)

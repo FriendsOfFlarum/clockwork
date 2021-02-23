@@ -17,8 +17,9 @@ use Clockwork\Request\Log;
 use Clockwork\Request\Request;
 use Clockwork\Request\Timeline;
 use Clockwork\Request\UserData;
-use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Arr;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,9 +27,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class FlarumDataSource extends DataSource
 {
     /**
-     * Laravel application from which the data is retrieved.
+     * Laravel container from which the data is retrieved.
+     *
+     * @var Container
      */
-    protected $app;
+    protected $container;
 
     /**
      * Log data structure.
@@ -55,9 +58,9 @@ class FlarumDataSource extends DataSource
     /**
      * Create a new data source, takes Laravel application instance as an argument.
      */
-    public function __construct(Application $app)
+    public function __construct(Container $container)
     {
-        $this->app = $app;
+        $this->container = $container;
 
         $this->timeline = new Timeline();
     }
@@ -105,15 +108,15 @@ class FlarumDataSource extends DataSource
      */
     public function listenToEvents()
     {
-        $this->app['events']->listen('clockwork.controller.start', function () {
+        $this->container['events']->listen('clockwork.controller.start', function () {
             $this->timeline->startEvent('controller', 'Request processing');
         });
 
-        $this->app['events']->listen('clockwork.controller.end', function () {
+        $this->container['events']->listen('clockwork.controller.end', function () {
             $this->timeline->endEvent('controller');
         });
 
-        $this->app['events']->listen('clockwork.running.end', function () {
+        $this->container['events']->listen('clockwork.running.end', function () {
             $this->timeline->endEvent('running');
         });
     }
@@ -126,16 +129,16 @@ class FlarumDataSource extends DataSource
         $this->timeline->startEvent('total', 'Total execution time', 'start');
         $this->timeline->startEvent('booting', 'Application booting', 'start');
 
-        $this->app->booted(function () {
+        $this->container['flarum']->booted(function () {
             $this->timeline->endEvent('booting');
             $this->timeline->startEvent('running', 'Application running');
         });
 
         $this->count = [];
 
-        $this->app['events']->listen('*', function ($event) {
+        $this->container['events']->listen('*', function ($event) {
             $str = is_string($event) ? $event : get_class($event);
-            $this->count[$str] = array_get($this->count, $str) ?? 0;
+            $this->count[$str] = Arr::get($this->count, $str) ?? 0;
             $this->count[$str]++;
         });
     }
@@ -176,19 +179,19 @@ class FlarumDataSource extends DataSource
         /**
          * @var UserData
          */
-        $data = app('clockwork')->userData('Flarum');
+        $data = $this->container['clockwork']->userData('Flarum');
 
         $data->title('Flarum');
 
         $data->counters([
-            'Installed Extensions' => app('flarum.extensions')->getExtensions()->count(),
-            'Enabled Extensions'   => count(app('flarum.extensions')->getEnabledExtensions()),
+            'Installed Extensions' => $this->container['flarum.extensions']->getExtensions()->count(),
+            'Enabled Extensions'   => count($this->container['flarum.extensions']->getEnabledExtensions()),
         ]);
 
         $data->table(null, [
-            ['Versions' => 'Flarum', null => app()->version()],
+            ['Versions' => 'Flarum', null => $this->container['flarum']->VERSION],
             ['PHP', PHP_VERSION],
-            ['MySQL', @$document->payload['mysqlVersion'] ?? app('flarum.db')->selectOne('select version() as version')->version],
+            ['MySQL', @$document->payload['mysqlVersion'] ?? $this->container['flarum.db']->selectOne('select version() as version')->version],
         ]);
 
         $data->table(null, [
@@ -251,7 +254,7 @@ class FlarumDataSource extends DataSource
 
     public function authenticate(RequestInterface $request)
     {
-        $authenticator = $this->app['clockwork']->getAuthenticator();
+        $authenticator = $this->container['clockwork']->getAuthenticator();
 
         return $authenticator->check($request);
     }

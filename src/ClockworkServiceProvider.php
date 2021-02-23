@@ -28,6 +28,10 @@ class ClockworkServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        if ($this->runningInConsole()) {
+            return;
+        }
+
         $this->app['clockwork.eloquent']->listenToEvents();
         $this->app['clockwork.cache']->listenToEvents();
         $this->app['clockwork.flarum']->listenToEvents();
@@ -36,6 +40,10 @@ class ClockworkServiceProvider extends ServiceProvider
 
     public function register()
     {
+        if ($this->runningInConsole()) {
+            return;
+        }
+
         $this->app->singleton('clockwork.support', function ($app) {
             return new ClockworkSupport($app);
         });
@@ -96,5 +104,10 @@ class ClockworkServiceProvider extends ServiceProvider
 
             return $clockwork;
         });
+    }
+
+    protected function runningInConsole(): bool
+    {
+        return php_sapi_name() === 'cli';
     }
 }
