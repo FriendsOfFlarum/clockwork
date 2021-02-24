@@ -40,7 +40,7 @@ class ClockworkWebController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if (! $this->container['clockwork.authenticator']->check($request)) {
+        if (!$this->container['clockwork.authenticator']->check($request)) {
             throw new PermissionDeniedException();
         }
 

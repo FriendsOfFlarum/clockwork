@@ -12,11 +12,8 @@
 namespace FoF\Clockwork;
 
 use Flarum\Extend;
-use Flarum\Foundation\Application;
-use Illuminate\Contracts\Container\Container;
 use Flarum\Frontend\Document;
 use FoF\Clockwork\Extend\FileStoragePath;
-use Illuminate\Events\Dispatcher;
 
 return [
     (new FileStoragePath()),

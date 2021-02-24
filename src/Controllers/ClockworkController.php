@@ -40,7 +40,7 @@ class ClockworkController implements RequestHandlerInterface
         $authenticator = $this->container['clockwork.authenticator'];
         $authenticated = $authenticator->check($request);
 
-        if (! $authenticated) {
+        if (!$authenticated) {
             return new JsonResponse([
                 'message'  => $this->container['translator']->trans('core.lib.error.permission_denied_message'),
                 'requires' => $authenticator->requires(),
