@@ -11,8 +11,8 @@
 
 namespace FoF\Clockwork\Controllers;
 
-use Laminas\Diactoros\Response\JsonResponse;
 use Illuminate\Contracts\Container\Container;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
