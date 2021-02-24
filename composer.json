@@ -8,7 +8,7 @@
   "license": "MIT",
   "require": {
     "flarum/core": "^0.1.0-beta.12",
-    "itsgoingd/clockwork": "^4.0.0"
+    "itsgoingd/clockwork": "^5.0.0"
   },
   "authors": [
     {

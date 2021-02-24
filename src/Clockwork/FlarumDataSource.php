@@ -15,8 +15,9 @@ use Clockwork\DataSource\DataSource;
 use Clockwork\Helpers\Serializer;
 use Clockwork\Request\Log;
 use Clockwork\Request\Request;
-use Clockwork\Request\Timeline;
+use Clockwork\Request\Timeline\Timeline;
 use Clockwork\Request\UserData;
+use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
@@ -56,7 +57,7 @@ class FlarumDataSource extends DataSource
     public $count;
 
     /**
-     * Create a new data source, takes Laravel application instance as an argument.
+     * Create a new data source, takes Laravel container instance as an argument.
      */
     public function __construct(Container $container)
     {
@@ -76,7 +77,7 @@ class FlarumDataSource extends DataSource
 
         $request->timelineData = $this->timeline->finalize($request->time);
 
-        $this->timeline->endEvent('clockwork.flarum');
+        $this->timeline->event('Clockwork')->end();
 
         return $request;
     }
@@ -109,15 +110,15 @@ class FlarumDataSource extends DataSource
     public function listenToEvents()
     {
         $this->container['events']->listen('clockwork.controller.start', function () {
-            $this->timeline->startEvent('controller', 'Request processing');
+            $this->timeline->event('Request processing')->start();
         });
 
         $this->container['events']->listen('clockwork.controller.end', function () {
-            $this->timeline->endEvent('controller');
+            $this->timeline->event('Request processing')->end();
         });
 
         $this->container['events']->listen('clockwork.running.end', function () {
-            $this->timeline->endEvent('running');
+            $this->timeline->event('Application running')->end();
         });
     }
 
@@ -126,12 +127,12 @@ class FlarumDataSource extends DataSource
      */
     public function listenToEarlyEvents()
     {
-        $this->timeline->startEvent('total', 'Total execution time', 'start');
-        $this->timeline->startEvent('booting', 'Application booting', 'start');
+        $this->timeline->event('Total execution time')->start();
+        $this->timeline->event('Application booting')->start();
 
         $this->container['flarum']->booted(function () {
-            $this->timeline->endEvent('booting');
-            $this->timeline->startEvent('running', 'Application running');
+            $this->timeline->event('Application booting')->end();
+            $this->timeline->event('Application running')->start();
         });
 
         $this->count = [];
@@ -173,8 +174,8 @@ class FlarumDataSource extends DataSource
 
     public function addDocumentData(Document $document)
     {
-        $this->timeline->endEvent('controller');
-        $this->timeline->startEvent('clockwork.flarum', 'Clockwork');
+        $this->timeline->event('Request processing')->end();
+        $this->timeline->event('Clockwork')->start();
 
         /**
          * @var UserData
@@ -189,7 +190,7 @@ class FlarumDataSource extends DataSource
         ]);
 
         $data->table(null, [
-            ['Versions' => 'Flarum', null => $this->container['flarum']->VERSION],
+            ['Versions' => 'Flarum', null => Application::VERSION],
             ['PHP', PHP_VERSION],
             ['MySQL', @$document->payload['mysqlVersion'] ?? $this->container['flarum.db']->selectOne('select version() as version')->version],
         ]);
