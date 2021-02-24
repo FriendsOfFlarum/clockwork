@@ -17,6 +17,7 @@ use Flarum\Extension\Extension;
 use Flarum\Foundation\Paths;
 use Illuminate\Contracts\Container\Container;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\Config;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
@@ -28,7 +29,7 @@ class FileStoragePath implements LifecycleInterface, ExtenderInterface
     public function onEnable(Container $container, Extension $extension)
     {
         if (!$this->storage()->has('clockwork')) {
-            $this->storage()->createDir('clockwork');
+            $this->storage()->createDir('clockwork', new Config(['visibility' => 'private']));
         }
     }
 
