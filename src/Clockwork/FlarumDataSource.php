@@ -172,7 +172,7 @@ class FlarumDataSource extends DataSource
         $this->request->getServerParams();
     }
 
-    public function addDocumentData(Document $document)
+    public function addDocumentData(?Document $document = null)
     {
         $this->timeline->event('Request processing')->end();
         $this->timeline->event('Clockwork')->start();
@@ -194,6 +194,10 @@ class FlarumDataSource extends DataSource
             ['PHP', PHP_VERSION],
             ['MySQL', @$document->payload['mysqlVersion'] ?? $this->container['flarum.db']->selectOne('select version() as version')->version],
         ]);
+
+        if (!$document) {
+            return;
+        }
 
         $data->table(null, [
             ['Content' => 'Layout View', null => $document->layoutView],

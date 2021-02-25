@@ -12,25 +12,20 @@
 namespace FoF\Clockwork;
 
 use Flarum\Extend;
-use Flarum\Frontend\Document;
+use FoF\Clockwork\AddFrontendData;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
     (new FileStoragePath()),
 
     (new Extend\Frontend('forum'))
-        ->content(function (Document $document) {
-            if (app()->bound('clockwork.flarum')) {
-                app('clockwork.flarum')->addDocumentData($document);
-            }
-        }),
+        ->content(AddFrontendData::class),
 
     (new Extend\Frontend('admin'))
-        ->content(function (Document $document) {
-            if (app()->bound('clockwork.flarum')) {
-                app('clockwork.flarum')->addDocumentData($document);
-            }
-        }),
+        ->content(AddFrontendData::class),
+
+    (new Extend\ApiController(\Flarum\Api\Controller\AbstractSerializeController::class))
+        ->prepareDataQuery(AddFrontendData::class),
 
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)
@@ -46,5 +41,8 @@ return [
         ->add(Middleware\ClockworkMiddleware::class),
 
     (new Extend\Middleware('admin'))
+        ->add(Middleware\ClockworkMiddleware::class),
+
+    (new Extend\Middleware('api'))
         ->add(Middleware\ClockworkMiddleware::class),
 ];
