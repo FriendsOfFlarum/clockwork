@@ -12,7 +12,6 @@
 namespace FoF\Clockwork;
 
 use Flarum\Extend;
-use FoF\Clockwork\AddFrontendData;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
