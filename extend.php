@@ -28,7 +28,7 @@ return [
 
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)
-        ->get('/__clockwork/app', 'fof.clockwork.app', Controllers\ClockworkWebController::class)
+        ->get('/__clockwork/app', 'fof.clockwork.app.web', Controllers\ClockworkWebController::class)
         ->get('/__clockwork/{folder:(?:css|img|js)}/{path:.+}', 'fof.clockwork.asset', Controllers\ClockworkAssetController::class)
         ->post('/__clockwork/auth', 'fof.clockwork.auth', Controllers\ClockworkAuthController::class)
         ->get('/__clockwork/{request:.+}', 'fof.clockwork.request', Controllers\ClockworkController::class),
