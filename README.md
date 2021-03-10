@@ -20,6 +20,16 @@ composer require fof/clockwork
 composer update fof/clockwork
 ```
 
+### Nginx Config
+
+If you're using the `.nginx.conf` file included with Flarum, include the following above the `location /` block:
+
+```
+location ~* /__clockwork/.*\.(css|js|json|png|jpg) {
+    try_files /index.php?$query_string /index.php?$query_string;
+}
+```
+
 ### Links
 
 [![OpenCollective](https://img.shields.io/badge/donate-friendsofflarum-44AEE5?style=for-the-badge&logo=open-collective)](https://opencollective.com/fof/donate) [![GitHub](https://img.shields.io/badge/donate-datitisev-ea4aaa?style=for-the-badge&logo=github)](https://datitisev.me/donate/github)
