@@ -7,7 +7,8 @@
   "type": "flarum-extension",
   "license": "MIT",
   "require": {
-    "flarum/core": "^0.1.0-beta.12",
+    "flarum/core": "^0.1.0-beta.16",
+    "flarum/laravel-helpers": "^0.1.0-beta.16",
     "itsgoingd/clockwork": "^5.0.0"
   },
   "authors": [
@@ -20,10 +21,7 @@
   "autoload": {
     "psr-4": {
       "FoF\\Clockwork\\": "src/"
-    },
-    "files": [
-      "src/helpers.php"
-    ]
+    }
   },
   "extra": {
     "flarum-extension": {
