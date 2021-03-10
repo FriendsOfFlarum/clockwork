@@ -18,6 +18,10 @@
       "role": "Developer"
     }
   ],
+  "support": {
+    "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
+    "source": "https://github.com/FriendsOfFlarum/clockwork"
+  },
   "autoload": {
     "psr-4": {
       "FoF\\Clockwork\\": "src/"
