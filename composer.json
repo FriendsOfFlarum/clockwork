@@ -7,8 +7,9 @@
   "type": "flarum-extension",
   "license": "MIT",
   "require": {
-    "flarum/core": "^0.1.0-beta.12",
-    "itsgoingd/clockwork": "^4.0.0"
+    "flarum/core": "^0.1.0-beta.16",
+    "flarum/laravel-helpers": "^0.1.0-beta.16",
+    "itsgoingd/clockwork": "^5.0.0"
   },
   "authors": [
     {
@@ -17,6 +18,10 @@
       "role": "Developer"
     }
   ],
+  "support": {
+    "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
+    "source": "https://github.com/FriendsOfFlarum/clockwork"
+  },
   "autoload": {
     "psr-4": {
       "FoF\\Clockwork\\": "src/"

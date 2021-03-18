@@ -11,6 +11,7 @@
 
 namespace FoF\Clockwork\Middleware;
 
+use Illuminate\Contracts\Container\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -18,6 +19,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ClockworkMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var Container
+     */
+    private $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * Process an incoming server request.
      *
@@ -27,16 +38,16 @@ class ClockworkMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false || !app()->bound('clockwork.flarum')) {
+        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false || !$this->container->bound('clockwork.flarum')) {
             return $handler->handle($request);
         }
 
-        app('events')->fire('clockwork.running.end');
-        app('events')->fire('clockwork.controller.start');
+        $this->container['events']->dispatch('clockwork.running.end');
+        $this->container['events']->dispatch('clockwork.controller.start');
 
         $response = $handler->handle($request);
 
-        app('events')->fire('clockwork.controller.end');
+        $this->container['events']->dispatch('clockwork.controller.end');
 
         $requestHandler = $request->getAttribute('request-handler');
         $uri = $request->getUri();
@@ -47,15 +58,15 @@ class ClockworkMiddleware implements MiddlewareInterface
             $request = $request->withUri($uri->withPath('/admin'.$uri->getPath()));
         }
 
-        app('clockwork.flarum')
+        $this->container['clockwork.flarum']
             ->setRequest($request)
             ->setResponse($response);
 
-        if (!app('clockwork.authenticator')->check($request)) {
+        if (!$this->container['clockwork.authenticator']->check($request)) {
             return $response;
         }
 
-        return app('clockwork')
+        return $this->container['clockwork']
             ->usePsrMessage($request, $response)
             ->requestProcessed();
     }

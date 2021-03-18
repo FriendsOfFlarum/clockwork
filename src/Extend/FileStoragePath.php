@@ -14,8 +14,10 @@ namespace FoF\Clockwork\Extend;
 use Flarum\Extend\ExtenderInterface;
 use Flarum\Extend\LifecycleInterface;
 use Flarum\Extension\Extension;
+use Flarum\Foundation\Paths;
 use Illuminate\Contracts\Container\Container;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\Config;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
@@ -27,13 +29,13 @@ class FileStoragePath implements LifecycleInterface, ExtenderInterface
     public function onEnable(Container $container, Extension $extension)
     {
         if (!$this->storage()->has('clockwork')) {
-            $this->storage()->createDir('clockwork');
+            $this->storage()->createDir('clockwork', new Config(['visibility' => 'private']));
         }
     }
 
     protected function storage(): Local
     {
-        return new Local(storage_path());
+        return new Local(app(Paths::class)->storage);
     }
 
     public function onDisable(Container $container, Extension $extension)
