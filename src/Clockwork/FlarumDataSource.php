@@ -17,6 +17,7 @@ use Clockwork\Request\Log;
 use Clockwork\Request\Request;
 use Clockwork\Request\Timeline\Timeline;
 use Clockwork\Request\UserData;
+use Flarum\Api\Controller\AbstractSerializeController;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
 use Illuminate\Contracts\Container\Container;
@@ -116,6 +117,7 @@ class FlarumDataSource extends DataSource
         });
 
         $this->container['events']->listen('clockwork.controller.end', function () {
+            $this->timeline->event('Data serialization')->end();
             $this->timeline->event('Request processing')->end();
 
             if ($this->timeline->find('Clockwork') === null) {
@@ -148,6 +150,15 @@ class FlarumDataSource extends DataSource
             $str = is_string($event) ? $event : get_class($event);
             $this->count[$str] = Arr::get($this->count, $str) ?? 0;
             $this->count[$str]++;
+        });
+
+        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function() {
+            $this->timeline->event('Controller logic')->begin();
+        });
+
+        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function() {
+            $this->timeline->event('Controller logic')->end();
+            $this->timeline->event('Data serialization')->begin();
         });
     }
 
