@@ -192,7 +192,6 @@ class FlarumDataSource extends DataSource
 
     public function addDocumentData(?Document $document = null)
     {
-        $this->timeline->event('Request processing')->end();
         $this->timeline->event('Clockwork')->begin();
 
         /**
