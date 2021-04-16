@@ -112,12 +112,19 @@ class FlarumDataSource extends DataSource
      */
     public function listenToEvents()
     {
-        $this->container['events']->listen('clockwork.controller.start', function () {
+        $this->container['events']->listen('clockwork.middleware.start', function () {
             $this->timeline->event('Request processing')->begin();
+        });
+
+        $this->container['events']->listen('clockwork.controller.start', function () {
+            $this->timeline->event('Controller logic')->begin();
         });
 
         $this->container['events']->listen('clockwork.controller.end', function () {
             $this->timeline->event('Data serialization')->end();
+        });
+
+        $this->container['events']->listen('clockwork.middleware.end', function () {
             $this->timeline->event('Request processing')->end();
 
             if ($this->timeline->find('Clockwork') === null) {
@@ -150,10 +157,6 @@ class FlarumDataSource extends DataSource
             $str = is_string($event) ? $event : get_class($event);
             $this->count[$str] = Arr::get($this->count, $str) ?? 0;
             $this->count[$str]++;
-        });
-
-        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function() {
-            $this->timeline->event('Controller logic')->begin();
         });
 
         AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function() {
