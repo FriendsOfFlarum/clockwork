@@ -12,7 +12,6 @@
 namespace FoF\Clockwork;
 
 use Flarum\Extend;
-use Flarum\Http\Middleware\StartSession;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
@@ -35,11 +34,11 @@ return [
         ->register(ClockworkServiceProvider::class),
 
     (new Extend\Middleware('forum'))
-        ->insertAfter(StartSession::class, Middleware\ClockworkMiddleware::class),
+        ->add(Middleware\ClockworkMiddleware::class),
 
     (new Extend\Middleware('admin'))
-        ->insertAfter(StartSession::class, Middleware\ClockworkMiddleware::class),
+        ->add(Middleware\ClockworkMiddleware::class),
 
     (new Extend\Middleware('api'))
-        ->insertAfter(StartSession::class, Middleware\ClockworkMiddleware::class),
+        ->add(Middleware\ClockworkMiddleware::class),
 ];
