@@ -117,6 +117,11 @@ class FlarumDataSource extends DataSource
 
         $this->container['events']->listen('clockwork.controller.end', function () {
             $this->timeline->event('Request processing')->end();
+
+            if ($this->timeline->find('Clockwork') === null) {
+                $this->timeline->event('Clockwork')->begin();
+                $this->addDocumentData();
+            }
         });
 
         $this->container['events']->listen('clockwork.running.end', function () {

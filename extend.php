@@ -24,9 +24,6 @@ return [
     (new Extend\Frontend('admin'))
         ->content(AddFrontendData::class),
 
-    (new Extend\ApiController(\Flarum\Api\Controller\AbstractSerializeController::class))
-        ->prepareDataQuery(AddFrontendData::class),
-
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)
         ->get('/__clockwork/app', 'fof.clockwork.app.web', Controllers\ClockworkWebController::class)
