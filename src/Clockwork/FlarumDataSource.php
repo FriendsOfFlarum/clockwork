@@ -75,9 +75,11 @@ class FlarumDataSource extends DataSource
 
         $this->resolveAuthenticatedUser($request);
 
-        $request->timelineData = $this->timeline->finalize($request->time);
-
         $this->timeline->event('Clockwork')->end();
+
+        $this->timeline->finalize($request->time);
+
+        $request->timeline()->merge($this->timeline);
 
         return $request;
     }
@@ -110,7 +112,7 @@ class FlarumDataSource extends DataSource
     public function listenToEvents()
     {
         $this->container['events']->listen('clockwork.controller.start', function () {
-            $this->timeline->event('Request processing')->start();
+            $this->timeline->event('Request processing')->begin();
         });
 
         $this->container['events']->listen('clockwork.controller.end', function () {
@@ -127,12 +129,12 @@ class FlarumDataSource extends DataSource
      */
     public function listenToEarlyEvents()
     {
-        $this->timeline->event('Total execution time')->start();
-        $this->timeline->event('Application booting')->start();
+        $this->timeline->event('Total execution time')->begin();
+        $this->timeline->event('Application booting')->begin();
 
         $this->container['flarum']->booted(function () {
             $this->timeline->event('Application booting')->end();
-            $this->timeline->event('Application running')->start();
+            $this->timeline->event('Application running')->begin();
         });
 
         $this->count = [];
@@ -175,7 +177,7 @@ class FlarumDataSource extends DataSource
     public function addDocumentData(?Document $document = null)
     {
         $this->timeline->event('Request processing')->end();
-        $this->timeline->event('Clockwork')->start();
+        $this->timeline->event('Clockwork')->begin();
 
         /**
          * @var UserData
