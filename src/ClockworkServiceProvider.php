@@ -22,6 +22,7 @@ use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Group\Group;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
+use FoF\Clockwork\Middleware\BeforeRouteExecutionMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class ClockworkServiceProvider extends ServiceProvider
@@ -36,6 +37,16 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.cache']->listenToEvents();
         $this->app['clockwork.flarum']->listenToEvents();
         $this->app['clockwork.events']->listenToEvents();
+
+        // This is done to dispatch an event right before controller execution,
+        // and after all middleware, including extension middleware.
+        foreach (['admin', 'forum', 'api'] as $frontend) {
+            $this->app->extend("flarum.$frontend.middleware", function ($middleware) {
+                $middleware[] = BeforeRouteExecutionMiddleware::class;
+
+                return $middleware;
+            });
+        }
     }
 
     public function register()

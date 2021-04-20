@@ -17,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ClockworkMiddleware implements MiddlewareInterface
+class BeforeRouteExecutionMiddleware implements MiddlewareInterface
 {
     /**
      * @var Container
@@ -42,32 +42,12 @@ class ClockworkMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $this->container['events']->dispatch('clockwork.running.end');
-        $this->container['events']->dispatch('clockwork.middleware.start');
+        $this->container['events']->dispatch('clockwork.controller.start');
 
         $response = $handler->handle($request);
 
-        $this->container['events']->dispatch('clockwork.middleware.end');
+        $this->container['events']->dispatch('clockwork.controller.end');
 
-        $requestHandler = $request->getAttribute('request-handler');
-        $uri = $request->getUri();
-
-        if ($requestHandler == 'flarum.api.middleware') {
-            $request = $request->withUri($uri->withPath('/api'.$uri->getPath()));
-        } elseif ($requestHandler == 'flarum.admin.middleware') {
-            $request = $request->withUri($uri->withPath('/admin'.$uri->getPath()));
-        }
-
-        $this->container['clockwork.flarum']
-            ->setRequest($request)
-            ->setResponse($response);
-
-        if (!$this->container['clockwork.authenticator']->check($request)) {
-            return $response;
-        }
-
-        return $this->container['clockwork']
-            ->usePsrMessage($request, $response)
-            ->requestProcessed();
+        return $response;
     }
 }
