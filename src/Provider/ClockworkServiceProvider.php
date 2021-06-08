@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FoF\Clockwork;
+namespace FoF\Clockwork\Provider;
 
 use Clockwork\DataSource\EloquentDataSource;
 use Clockwork\DataSource\LaravelCacheDataSource;
@@ -19,6 +19,7 @@ use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Request\Log;
 use Clockwork\Support\Laravel\ClockworkSupport;
 use Clockwork\Support\Vanilla\Clockwork;
+use Flarum\Foundation\Paths;
 use Flarum\Group\Group;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
@@ -94,10 +95,13 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.flarum']->listenToEarlyEvents();
 
         $this->app->singleton('clockwork', function ($app) {
+            // Resolve paths instead of using deprecated `storage_path(...)`
+            $paths = resolve(Paths::class);
+
             /** @var Clockwork|\Clockwork\Clockwork $clockwork */
             $clockwork = Clockwork::init([
                 'enable'             => true,
-                'storage_files_path' => storage_path('clockwork'),
+                'storage_files_path' => $paths->storage . '/clockwork',
             ]);
 
             $clockwork->setAuthenticator($app['clockwork.authenticator']);
