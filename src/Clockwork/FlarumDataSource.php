@@ -197,23 +197,46 @@ class FlarumDataSource extends DataSource
     {
         $this->timeline->event('Clockwork')->begin();
 
+        /** @var \Flarum\Extension\ExtensionManager */
+        $extensionManager = $this->container['flarum.extensions'];
+        $extensions = $extensionManager->getExtensions();
+        $enabledExtensions = $extensionManager->getEnabledExtensions();
+
         /**
          * @var UserData
          */
         $data = $this->container['clockwork']->userData('Flarum');
 
+        // Set tab with title "Flarum"
         $data->title('Flarum');
 
         $data->counters([
-            'Installed Extensions' => $this->container['flarum.extensions']->getExtensions()->count(),
-            'Enabled Extensions'   => count($this->container['flarum.extensions']->getEnabledExtensions()),
+            'Installed Extensions' => $extensions->count(),
+            'Enabled Extensions'   => count($enabledExtensions),
         ]);
 
-        $data->table(null, [
-            ['Versions' => 'Flarum', null => Application::VERSION],
+        $data->table("Core application versions", [
+            ['Software' => 'Flarum', 'Version' => Application::VERSION],
             ['PHP', PHP_VERSION],
             ['MySQL', @$document->payload['mysqlVersion'] ?? $this->container['flarum.db']->selectOne('select version() as version')->version],
         ]);
+
+        // Build list of extensions
+        $formattedExtensionList = [];
+
+        foreach ($extensions as $extension) {
+            /** @var \Flarum\Extension\Extension $extension */
+
+            $formattedExtension = [];
+
+            $formattedExtension = Arr::add($formattedExtension, 'Name', $extension->name);
+            $formattedExtension = Arr::add($formattedExtension, 'Version', $extension->getVersion());
+            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->id));
+
+            $formattedExtensionList[] = $formattedExtension;
+        }
+
+        $data->table('Extensions', $formattedExtensionList);
 
         if (!$document) {
             return;
