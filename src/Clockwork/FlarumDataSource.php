@@ -215,7 +215,7 @@ class FlarumDataSource extends DataSource
             'Enabled Extensions'   => count($enabledExtensions),
         ]);
 
-        $data->table("Core application versions", [
+        $data->table('Core application versions', [
             ['Software' => 'Flarum', 'Version' => Application::VERSION],
             ['PHP', PHP_VERSION],
             ['MySQL', @$document->payload['mysqlVersion'] ?? $this->container['flarum.db']->selectOne('select version() as version')->version],
@@ -226,7 +226,6 @@ class FlarumDataSource extends DataSource
 
         foreach ($extensions as $extension) {
             /** @var \Flarum\Extension\Extension $extension */
-
             $formattedExtension = [];
 
             $formattedExtension = Arr::add($formattedExtension, 'Name', $extension->name);
