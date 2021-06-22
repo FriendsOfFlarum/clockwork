@@ -32,7 +32,7 @@ class FlarumAuthenticator implements AuthenticatorInterface
     {
         $user = RequestUtil::getActor($request);
 
-        return ! $user->isGuest() && $user->groups->contains($this->groupId);
+        return !$user->isGuest() && $user->groups->contains($this->groupId);
     }
 
     public function requires()
