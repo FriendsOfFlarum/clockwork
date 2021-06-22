@@ -12,6 +12,7 @@
 namespace FoF\Clockwork\Clockwork;
 
 use Clockwork\Authentication\AuthenticatorInterface;
+use Flarum\Http\RequestUtil;
 
 class FlarumAuthenticator implements AuthenticatorInterface
 {
@@ -29,9 +30,9 @@ class FlarumAuthenticator implements AuthenticatorInterface
 
     public function check($request)
     {
-        $user = $request->getAttribute('actor');
+        $user = RequestUtil::getActor($request);
 
-        return $user != null ? $user->groups->contains($this->groupId) : false;
+        return ! $user->isGuest() && $user->groups->contains($this->groupId);
     }
 
     public function requires()
