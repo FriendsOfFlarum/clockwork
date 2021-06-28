@@ -29,6 +29,7 @@
   "extra": {
     "flarum-extension": {
       "title": "FoF Clockwork",
+      "category": "feature",
       "icon": {
         "name": "fas fa-terminal",
         "backgroundColor": "#e74c3c",
