@@ -35,7 +35,7 @@ class FileStoragePath implements LifecycleInterface, ExtenderInterface
 
     protected function storage(): Local
     {
-        return new Local(app(Paths::class)->storage);
+        return new Local(resolve(Paths::class)->storage);
     }
 
     public function onDisable(Container $container, Extension $extension)

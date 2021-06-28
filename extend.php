@@ -31,7 +31,7 @@ return [
         ->get('/__clockwork/{request:.+}', 'fof.clockwork.request', Controllers\ClockworkController::class),
 
     (new Extend\ServiceProvider())
-        ->register(ClockworkServiceProvider::class),
+        ->register(Provider\ClockworkServiceProvider::class),
 
     (new Extend\Middleware('forum'))
         ->add(Middleware\ClockworkMiddleware::class),
