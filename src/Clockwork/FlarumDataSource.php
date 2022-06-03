@@ -114,9 +114,11 @@ class FlarumDataSource extends DataSource
     {
         $this->container['events']->listen('clockwork.middleware.start', function () {
             $this->timeline->event('Request processing')->color('purple')->begin();
+            $this->timeline->event('Middleware')->color('yellow')->begin();
         });
 
         $this->container['events']->listen('clockwork.controller.start', function () {
+            $this->timeline->event('Middleware')->end();
             $this->timeline->event('Controller logic')->color('purple')->begin();
         });
 
