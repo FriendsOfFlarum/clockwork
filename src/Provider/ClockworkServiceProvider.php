@@ -24,6 +24,7 @@ use Flarum\Group\Group;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
 use FoF\Clockwork\Middleware\BeforeRouteExecutionMiddleware;
+use FoF\Clockwork\Middleware\ClockworkMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class ClockworkServiceProvider extends ServiceProvider
@@ -48,6 +49,13 @@ class ClockworkServiceProvider extends ServiceProvider
                 return $middleware;
             });
         }
+
+        // Remove the clockwork middleware from API Client handling
+        $this->app->extend('flarum.api_client.exclude_middleware', function (array $exlusions) {
+            $exlusions[] = ClockworkMiddleware::class;
+
+            return $exlusions;
+        });
     }
 
     public function register()
