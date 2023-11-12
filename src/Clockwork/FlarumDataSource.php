@@ -20,6 +20,7 @@ use Clockwork\Request\UserData;
 use Flarum\Api\Controller\AbstractSerializeController;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
+use Flarum\Http\RequestUtil;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\RequestInterface;
@@ -180,7 +181,8 @@ class FlarumDataSource extends DataSource
     // Add authenticated user data to the request
     protected function resolveAuthenticatedUser(Request $request)
     {
-        if (!($user = $this->request->getattribute('actor'))) {
+        $user = RequestUtil::getActor($this->request);
+        if ($user->isGuest()) {
             return;
         }
         if (!isset($user->email) || !isset($user->id)) {
@@ -232,7 +234,7 @@ class FlarumDataSource extends DataSource
 
             $formattedExtension = Arr::add($formattedExtension, 'Name', $extension->name);
             $formattedExtension = Arr::add($formattedExtension, 'Version', $extension->getVersion());
-            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->id));
+            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->name));
 
             $formattedExtensionList[] = $formattedExtension;
         }
