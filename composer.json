@@ -1,43 +1,58 @@
 {
-  "name": "fof/clockwork",
-  "description": "Debug your Flarum forum with Clockwork",
-  "keywords": [
-    "flarum"
-  ],
-  "type": "flarum-extension",
-  "license": "MIT",
-  "require": {
-    "flarum/core": "^1.0.2",
-    "itsgoingd/clockwork": "5.1.5"
-  },
-  "authors": [
-    {
-      "name": "David Sevilla Martín",
-      "email": "david.s@redevs.org",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
-    "source": "https://github.com/FriendsOfFlarum/clockwork"
-  },
-  "autoload": {
-    "psr-4": {
-      "FoF\\Clockwork\\": "src/"
-    }
-  },
-  "extra": {
-    "flarum-extension": {
-      "title": "FoF Clockwork",
-      "category": "feature",
-      "icon": {
-        "name": "fas fa-terminal",
-        "backgroundColor": "#e74c3c",
-        "color": "#fff"
-      }
+    "name": "fof/clockwork",
+    "description": "Debug your Flarum forum with Clockwork",
+    "keywords": [
+        "flarum"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.0.2",
+        "itsgoingd/clockwork": "5.1.5"
     },
-    "flagrow": {
-      "discuss": ""
+    "authors": [
+        {
+            "name": "David Sevilla Martín",
+            "email": "david.s@redevs.org",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
+        "source": "https://github.com/FriendsOfFlarum/clockwork"
+    },
+    "autoload": {
+        "psr-4": {
+            "FoF\\Clockwork\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "FoF Clockwork",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-terminal",
+                "backgroundColor": "#e74c3c",
+                "color": "#fff"
+            }
+        },
+        "flagrow": {
+            "discuss": ""
+        },
+        "flarum-cli": {
+            "modules": {
+                "githubActions": true
+            }
+        }
+    },
+    "require-dev": {
+        "flarum/phpstan": "*"
+    },
+    "scripts": {
+        "analyse:phpstan": "phpstan analyse",
+        "clear-cache:phpstan": "phpstan clear-result-cache"
+    },
+    "scripts-descriptions": {
+        "analyse:phpstan": "Run static analysis"
     }
-  }
 }
