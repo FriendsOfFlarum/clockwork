@@ -15,7 +15,7 @@ use Flarum\Extend;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
-    (new FileStoragePath()),
+    new FileStoragePath(),
 
     (new Extend\Frontend('forum'))
         ->content(AddFrontendData::class),

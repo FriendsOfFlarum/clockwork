@@ -182,7 +182,7 @@ class FlarumDataSource extends DataSource
     protected function resolveAuthenticatedUser(Request $request)
     {
         $user = RequestUtil::getActor($this->request);
-        if ($user->isGuest()){
+        if ($user->isGuest()) {
             return;
         }
         if (!isset($user->email) || !isset($user->id)) {
