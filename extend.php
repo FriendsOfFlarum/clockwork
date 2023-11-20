@@ -15,13 +15,17 @@ use Flarum\Extend;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
-    new FileStoragePath(),
-
     (new Extend\Frontend('forum'))
         ->content(AddFrontendData::class),
 
     (new Extend\Frontend('admin'))
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/resources/less/admin.less')
         ->content(AddFrontendData::class),
+
+    (new Extend\Locales(__DIR__.'/resources/locale')),
+
+    new FileStoragePath(),
 
     (new Extend\Routes('forum'))
         ->get('/__clockwork[/]', 'fof.clockwork.app', Controllers\ClockworkRedirectController::class)
