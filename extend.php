@@ -23,7 +23,7 @@ return [
         ->css(__DIR__.'/resources/less/admin.less')
         ->content(AddFrontendData::class),
 
-    (new Extend\Locales(__DIR__.'/resources/locale')),
+    new Extend\Locales(__DIR__.'/resources/locale'),
 
     new FileStoragePath(),
 
