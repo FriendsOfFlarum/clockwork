@@ -18,6 +18,8 @@ use Clockwork\Request\Request;
 use Clockwork\Request\Timeline\Timeline;
 use Clockwork\Request\UserData;
 use Flarum\Api\Controller\AbstractSerializeController;
+use Flarum\Api\Resource\AbstractDatabaseResource;
+use Flarum\Api\Resource\AbstractResource;
 use Flarum\Foundation\Application;
 use Flarum\Frontend\Document;
 use Flarum\Http\RequestUtil;
@@ -26,6 +28,7 @@ use Illuminate\Support\Arr;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tobyz\JsonApiServer\Endpoint\Endpoint;
 
 class FlarumDataSource extends DataSource
 {
@@ -162,10 +165,21 @@ class FlarumDataSource extends DataSource
             $this->count[$str]++;
         });
 
-        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function () {
+        $recordAfterEndpoint = function () {
             $this->timeline->event('Controller logic')->end();
             $this->timeline->event('Data serialization')->color('purple')->begin();
-        });
+        };
+
+        foreach ([AbstractResource::class, AbstractDatabaseResource::class] as $resourceClass) {
+            $resourceClass::mutateEndpoints(function ($endpoints) use ($recordAfterEndpoint) {
+                /** @var Endpoint $endpoint */
+                foreach ($endpoints as $endpoint) {
+                    $endpoint->beforeSerialization($recordAfterEndpoint);
+                }
+
+                return $endpoints;
+            });
+        }
     }
 
     /**

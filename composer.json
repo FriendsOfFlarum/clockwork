@@ -7,7 +7,7 @@
     "type": "flarum-extension",
     "license": "MIT",
     "require": {
-        "flarum/core": "^1.0.2",
+        "flarum/core": "^2.0",
         "itsgoingd/clockwork": "5.1.5"
     },
     "authors": [
@@ -23,7 +23,8 @@
     },
     "autoload": {
         "psr-4": {
-            "FoF\\Clockwork\\": "src/"
+            "FoF\\Clockwork\\": "src/",
+            "Clockwork\\": "itsgoingd/Clockwork/"
         }
     },
     "extra": {
