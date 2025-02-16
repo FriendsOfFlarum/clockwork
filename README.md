@@ -1,6 +1,6 @@
 # FriendsOfFlarum Clockwork
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/clockwork.svg)](https://packagist.org/packages/fof/clockwork) [![OpenCollective](https://img.shields.io/badge/opencollective-fof-blue.svg)](https://opencollective.com/fof/donate) [![Donate](https://img.shields.io/badge/donate-datitisev-important.svg)](https://datitisev.me/donate)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/clockwork.svg)](https://packagist.org/packages/fof/clockwork) [![OpenCollective](https://img.shields.io/badge/opencollective-fof-blue.svg)](https://opencollective.com/fof/donate)
 
 A [Flarum](http://flarum.org) extension. Debug your Flarum forum with [Clockwork](https://underground.works/clockwork/).
 
@@ -32,7 +32,7 @@ location ~* /__clockwork/.*\.(css|js|json|png|jpg) {
 
 ### Links
 
-[![OpenCollective](https://img.shields.io/badge/donate-friendsofflarum-44AEE5?style=for-the-badge&logo=open-collective)](https://opencollective.com/fof/donate) [![GitHub](https://img.shields.io/badge/donate-datitisev-ea4aaa?style=for-the-badge&logo=github)](https://datitisev.me/donate/github)
+[![OpenCollective](https://img.shields.io/badge/donate-friendsofflarum-44AEE5?style=for-the-badge&logo=open-collective)](https://opencollective.com/fof/donate)
 
 - [Packagist](https://packagist.org/packages/fof/clockwork)
 - [GitHub](https://github.com/FriendsOfFlarum/clockwork)

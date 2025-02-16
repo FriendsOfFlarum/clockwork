@@ -12,21 +12,30 @@
     },
     "authors": [
         {
-            "name": "David Sevilla Martín",
-            "email": "david.s@redevs.org",
-            "role": "Developer"
+            "name": "FriendsOfFlarum",
+            "homepage": "https://friendsofflarum.org"
         }
     ],
     "support": {
         "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
         "source": "https://github.com/FriendsOfFlarum/clockwork"
     },
+    "homepage": "https://friendsofflarum.org",
+    "funding": [
+        {
+            "type": "website",
+            "url": "https://opencollective.com/fof/donate"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "FoF\\Clockwork\\": "src/"
         }
     },
     "extra": {
+        "branch-alias": {
+            "1.x": "1.x-dev"
+        },
         "flarum-extension": {
             "title": "FoF Clockwork",
             "category": "feature",
@@ -35,9 +44,6 @@
                 "backgroundColor": "#e74c3c",
                 "color": "#fff"
             }
-        },
-        "flagrow": {
-            "discuss": ""
         },
         "flarum-cli": {
             "modules": {
