@@ -21,12 +21,12 @@ use League\Flysystem\Config;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
-    public function extend(Container $container, Extension $extension = null)
+    public function extend(Container $container, Extension $extension = null): void
     {
         // TODO: Implement extend() method.
     }
 
-    public function onEnable(Container $container, Extension $extension)
+    public function onEnable(Container $container, Extension $extension): void
     {
         if (!$this->storage()->has('clockwork')) {
             $this->storage()->createDir('clockwork', new Config(['visibility' => 'private']));
@@ -38,7 +38,7 @@ class FileStoragePath implements LifecycleInterface, ExtenderInterface
         return new Local(resolve(Paths::class)->storage);
     }
 
-    public function onDisable(Container $container, Extension $extension)
+    public function onDisable(Container $container, Extension $extension): void
     {
         if ($this->storage()->has('clockwork')) {
             $this->storage()->deleteDir('clockwork');
