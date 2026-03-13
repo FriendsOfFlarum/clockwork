@@ -21,7 +21,7 @@ use League\Flysystem\Local\LocalFilesystemAdapter;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
-    public function extend(Container $container, Extension $extension = null): void
+    public function extend(Container $container, ?Extension $extension = null): void
     {
         // TODO: Implement extend() method.
     }
