@@ -276,7 +276,7 @@ class FlarumDataSource extends DataSource
         $data = $this->container['clockwork']->userData('Document')->title('Document Data');
 
         $data->table('Document', [
-            ['Item' => 'Layout View', null => $document->layoutView],
+            ['Item' => 'Layout View', '' => $document->layoutView],
             ['App View', $document->appView],
             ['Content View', $document->contentView],
             ['Language', $document->language],
@@ -289,7 +289,7 @@ class FlarumDataSource extends DataSource
                 'HTML Meta Tags',
                 collect($document->meta)
                     ->map(function ($value, $key) {
-                        return ['Key' => $key, null => $value];
+                        return ['Key' => $key, '' => $value];
                     })
                     ->toArray()
             );
@@ -314,7 +314,7 @@ class FlarumDataSource extends DataSource
                         return $key !== 'resources';
                     })
                     ->map(function ($value, $key) {
-                        return ['Payload' => $key, null => $value];
+                        return ['Payload' => $key, '' => $value];
                     })
                     ->toArray()
             );
