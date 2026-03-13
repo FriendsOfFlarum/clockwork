@@ -38,11 +38,10 @@ class ClockworkMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (strpos($request->getUri()->getPath(), '/__clockwork') !== false || !$this->container->bound('clockwork.flarum')) {
+        if (!$this->container->bound('clockwork.flarum') || strpos($request->getUri()->getPath(), '/__clockwork') !== false) {
             return $handler->handle($request);
         }
 
-        $this->container['events']->dispatch('clockwork.running.end');
         $this->container['events']->dispatch('clockwork.middleware.start');
 
         $response = $handler->handle($request);
@@ -52,12 +51,12 @@ class ClockworkMiddleware implements MiddlewareInterface
         $requestHandler = $request->getAttribute('request-handler');
         $uri = $request->getUri();
 
-        if ($requestHandler == 'flarum.api.middleware') {
+        if ($requestHandler === 'flarum.api.handler') {
             $request = $request->withUri($uri->withPath('/api'.$uri->getPath()));
-        } elseif ($requestHandler == 'flarum.admin.middleware') {
+        } elseif ($requestHandler === 'flarum.admin.handler') {
             $request = $request->withUri($uri->withPath('/admin'.$uri->getPath()));
-        } elseif ($requestHandler == 'flarum.forum.handler') {
-            $request = $request->withUri($uri->withPath('/forum'.$uri->getPath()));
+        } elseif ($requestHandler === 'flarum.forum.handler') {
+            $request = $request->withUri($uri->withPath($uri->getPath()));
         }
 
         $this->container['clockwork.flarum']
@@ -67,6 +66,8 @@ class ClockworkMiddleware implements MiddlewareInterface
         if (!$this->container['clockwork.authenticator']->check($request)) {
             return $response;
         }
+
+        $this->container['events']->dispatch('clockwork.running.end');
 
         return $this->container['clockwork']
             ->usePsrMessage($request, $response)
