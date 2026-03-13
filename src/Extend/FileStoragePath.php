@@ -16,32 +16,32 @@ use Flarum\Extend\LifecycleInterface;
 use Flarum\Extension\Extension;
 use Flarum\Foundation\Paths;
 use Illuminate\Contracts\Container\Container;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
-    public function extend(Container $container, Extension $extension = null): void
+    public function extend(Container $container, ?Extension $extension = null): void
     {
         // TODO: Implement extend() method.
     }
 
     public function onEnable(Container $container, Extension $extension): void
     {
-        if (!$this->storage()->has('clockwork')) {
-            $this->storage()->createDir('clockwork', new Config(['visibility' => 'private']));
+        if (!$this->storage()->directoryExists('clockwork')) {
+            $this->storage()->createDirectory('clockwork', new Config(['visibility' => 'private']));
         }
     }
 
-    protected function storage(): Local
+    protected function storage(): LocalFilesystemAdapter
     {
-        return new Local(resolve(Paths::class)->storage);
+        return new LocalFilesystemAdapter(resolve(Paths::class)->storage);
     }
 
     public function onDisable(Container $container, Extension $extension): void
     {
-        if ($this->storage()->has('clockwork')) {
-            $this->storage()->deleteDir('clockwork');
+        if ($this->storage()->directoryExists('clockwork')) {
+            $this->storage()->deleteDirectory('clockwork');
         }
     }
 }
