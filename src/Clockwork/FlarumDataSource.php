@@ -220,7 +220,7 @@ class FlarumDataSource extends DataSource
         $enabledExtensions = $extensionManager->getEnabledExtensions();
 
         /**
-         * @var UserData
+         * @var UserData $data
          */
         $data = $this->container['clockwork']->userData('Flarum');
 
@@ -252,14 +252,31 @@ class FlarumDataSource extends DataSource
             $formattedExtensionList[] = $formattedExtension;
         }
 
-        $data->table('Extensions', $formattedExtensionList);
+        $data->table('Flarum Extensions', $formattedExtensionList);
 
-        if (!$document) {
-            return;
+        if (!empty($this->count)) {
+            $data->table(
+                'Event Counts',
+                collect($this->count)
+                    ->map(function ($value, $key) {
+                        return ['Events' => $key, 'Count' => $value];
+                    })
+                    ->sortBy('Count', SORT_REGULAR, true)
+                    ->toArray()
+            );
         }
 
-        $data->table(null, [
-            ['Content' => 'Layout View', null => $document->layoutView],
+        if ($document) {
+            $this->addDocumentTables($document);
+        }
+    }
+
+    protected function addDocumentTables(Document $document): void
+    {
+        $data = $this->container['clockwork']->userData('Document')->title('Document Data');
+
+        $data->table('Document', [
+            ['Item' => 'Layout View', null => $document->layoutView],
             ['App View', $document->appView],
             ['Content View', $document->contentView],
             ['Language', $document->language],
@@ -269,10 +286,10 @@ class FlarumDataSource extends DataSource
 
         if (!empty($document->meta)) {
             $data->table(
-                null,
+                'HTML Meta Tags',
                 collect($document->meta)
                     ->map(function ($value, $key) {
-                        return ['Meta' => $key, null => $value];
+                        return ['Key' => $key, null => $value];
                     })
                     ->toArray()
             );
@@ -280,7 +297,7 @@ class FlarumDataSource extends DataSource
 
         if (!empty($document->head)) {
             $data->table(
-                null,
+                'HTML Head',
                 collect($document->head)
                     ->map(function ($value) {
                         return ['Head' => $value];
@@ -291,7 +308,7 @@ class FlarumDataSource extends DataSource
 
         if (!empty($document->payload)) {
             $data->table(
-                null,
+                'Document Payload',
                 collect($document->payload)
                     ->filter(function ($value, $key) {
                         return $key !== 'resources';
@@ -299,18 +316,6 @@ class FlarumDataSource extends DataSource
                     ->map(function ($value, $key) {
                         return ['Payload' => $key, null => $value];
                     })
-                    ->toArray()
-            );
-        }
-
-        if (!empty($this->count)) {
-            $data->table(
-                null,
-                collect($this->count)
-                    ->map(function ($value, $key) {
-                        return ['Events' => $key, 'Count' => $value];
-                    })
-                    ->sortBy('Count', SORT_REGULAR, true)
                     ->toArray()
             );
         }

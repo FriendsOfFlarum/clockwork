@@ -44,10 +44,15 @@ class ClockworkMiddleware implements MiddlewareInterface
 
         $this->container['events']->dispatch('clockwork.middleware.start');
 
+        // The Flarum Data Source seems to run in the handle call, so we want to provide the request early.
+        $this->container['clockwork.flarum']->setRequest($request);
+
+        // === Run the request! ===
         $response = $handler->handle($request);
 
         $this->container['events']->dispatch('clockwork.middleware.end');
 
+        // Modify request URI to include frontend (/api, /admin, /) prefix based on request handler.
         $requestHandler = $request->getAttribute('request-handler');
         $uri = $request->getUri();
 
