@@ -214,7 +214,7 @@ class FlarumDataSource extends DataSource
     {
         $this->timeline->event('Clockwork')->begin();
 
-        /** @var \Flarum\Extension\ExtensionManager */
+        /** @var \Flarum\Extension\ExtensionManager $extensionManager */
         $extensionManager = $this->container['flarum.extensions'];
         $extensions = $extensionManager->getExtensions();
         $enabledExtensions = $extensionManager->getEnabledExtensions();
@@ -247,7 +247,7 @@ class FlarumDataSource extends DataSource
 
             $formattedExtension = Arr::add($formattedExtension, 'Name', $extension->name);
             $formattedExtension = Arr::add($formattedExtension, 'Version', $extension->getVersion());
-            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->name));
+            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->getId()) ? '✓' : '');
 
             $formattedExtensionList[] = $formattedExtension;
         }
