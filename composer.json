@@ -9,7 +9,7 @@
     "require": {
         "php": "^8.2",
         "flarum/core": "^1.8",
-        "itsgoingd/clockwork": "5.1.5"
+        "itsgoingd/clockwork": "^5.3"
     },
     "authors": [
         {
