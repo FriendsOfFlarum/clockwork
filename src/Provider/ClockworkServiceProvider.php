@@ -17,13 +17,11 @@ use Clockwork\DataSource\LaravelEventsDataSource;
 use Clockwork\DataSource\MonologDataSource;
 use Clockwork\DataSource\XdebugDataSource;
 use Clockwork\Request\Log;
-use Clockwork\Support\Laravel\ClockworkSupport;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Foundation\Paths;
 use Flarum\Group\Group;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
-use FoF\Clockwork\Middleware\BeforeRouteExecutionMiddleware;
 use FoF\Clockwork\Middleware\ClockworkMiddleware;
 use Illuminate\Support\ServiceProvider;
 
@@ -40,21 +38,11 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.flarum']->listenToEvents();
         $this->app['clockwork.events']->listenToEvents();
 
-        // This is done to dispatch an event right before controller execution,
-        // and after all middleware, including extension middleware.
-        foreach (['admin', 'forum', 'api'] as $frontend) {
-            $this->app->extend("flarum.$frontend.middleware", function ($middleware) {
-                $middleware[] = BeforeRouteExecutionMiddleware::class;
-
-                return $middleware;
-            });
-        }
-
         // Remove the clockwork middleware from API Client handling
-        $this->app->extend('flarum.api_client.exclude_middleware', function (array $exlusions) {
-            $exlusions[] = ClockworkMiddleware::class;
+        $this->app->extend('flarum.api_client.exclude_middleware', function (array $exclusions) {
+            $exclusions[] = ClockworkMiddleware::class;
 
-            return $exlusions;
+            return $exclusions;
         });
     }
 
@@ -63,10 +51,6 @@ class ClockworkServiceProvider extends ServiceProvider
         if ($this->runningInConsole()) {
             return;
         }
-
-        $this->app->singleton('clockwork.support', function ($app) {
-            return new ClockworkSupport($app);
-        });
 
         $this->app->singleton('clockwork.authenticator', function () {
             return new FlarumAuthenticator(Group::ADMINISTRATOR_ID);
@@ -86,8 +70,8 @@ class ClockworkServiceProvider extends ServiceProvider
 
         $this->app->singleton('clockwork.events', function ($app) {
             return new LaravelEventsDataSource($app['events'], [
-                'Flarum\\\\Event\\\\.+',
-                'Flarum\\\\Api\\\\Event\\\\.+',
+                'Flarum\\\\\\\\Event\\\\\\\\.+',
+                'Flarum\\\\\\\\Api\\\\\\\\Event\\\\\\\\.+',
             ]);
         });
 
@@ -103,7 +87,6 @@ class ClockworkServiceProvider extends ServiceProvider
         $this->app['clockwork.flarum']->listenToEarlyEvents();
 
         $this->app->singleton('clockwork', function ($app) {
-            // Resolve paths instead of using deprecated `storage_path(...)`
             $paths = resolve(Paths::class);
 
             /** @var Clockwork|\Clockwork\Clockwork $clockwork */

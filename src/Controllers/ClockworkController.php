@@ -11,7 +11,7 @@
 
 namespace FoF\Clockwork\Controllers;
 
-use Flarum\Http\Exception\RouteNotFoundException;
+use Clockwork\Storage\Search;
 use Illuminate\Contracts\Container\Container;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -47,13 +47,38 @@ class ClockworkController implements RequestHandlerInterface
             ], 403);
         }
 
-        $req = $request->getQueryParams()['request'];
-        $metadata = $this->container['clockwork']->getMetadata($req);
+        // Flarum merges route params into query params (RouteHandlerFactory).
+        // The {request:.+} route param captures e.g. "latest", "{id}", "{id}/previous", "{id}/next/50"
+        $path  = $request->getQueryParams()['request'] ?? '';
+        $parts = explode('/', $path);
 
-        if ($metadata == null) {
-            throw new RouteNotFoundException();
+        $id        = $parts[0] ?? null;
+        $direction = $parts[1] ?? null;
+        $count     = isset($parts[2]) ? (int) $parts[2] : null;
+
+        $storage = $this->container['clockwork']->getClockwork()->storage();
+        $search  = Search::fromRequest($request->getQueryParams());
+
+        if ($direction === 'previous') {
+            $data = $storage->previous($id, $count, $search);
+        } elseif ($direction === 'next') {
+            $data = $storage->next($id, $count, $search);
+        } elseif ($id === 'latest') {
+            $data = $storage->latest($search);
+        } else {
+            $data = $storage->find($id);
         }
 
-        return new JsonResponse($metadata);
+        if ($data === null || $data === false) {
+            return new JsonResponse(['message' => 'Not found.'], 404);
+        }
+
+        if (is_array($data)) {
+            $data = array_map(fn ($r) => $r->toArray(), $data);
+        } else {
+            $data = $data->toArray();
+        }
+
+        return new JsonResponse($data);
     }
 }

@@ -11,6 +11,7 @@
 
 namespace FoF\Clockwork\Controllers;
 
+use Flarum\Http\RequestUtil;
 use Illuminate\Contracts\Container\Container;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -37,7 +38,7 @@ class ClockworkAuthController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $token = $this->container['clockwork.authenticator']->attempt(
-            ['actor' => $request->getAttribute('actor')]
+            ['actor' => RequestUtil::getActor($request)]
         );
 
         return new JsonResponse(['token' => $token], $token ? 200 : 403);
