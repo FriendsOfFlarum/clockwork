@@ -4,7 +4,7 @@
 
 A [Flarum](http://flarum.org) extension that integrates [Clockwork](https://underground.works/clockwork/) — a developer tools panel for inspecting and profiling requests in real time.
 
-![Screenshot](resources/screenshot.png)
+![Screenshot](docs/screenshot.png)
 
 ---
 
