@@ -235,7 +235,7 @@ class FlarumDataSource extends DataSource
 
             $formattedExtension = Arr::add($formattedExtension, 'Name', $extension->name);
             $formattedExtension = Arr::add($formattedExtension, 'Version', $extension->getVersion());
-            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->name));
+            $formattedExtension = Arr::add($formattedExtension, 'Enabled', $extensionManager->isEnabled($extension->getId()) ? '✓' : '');
 
             $formattedExtensionList[] = $formattedExtension;
         }
