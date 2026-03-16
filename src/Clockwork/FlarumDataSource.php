@@ -115,19 +115,25 @@ class FlarumDataSource extends DataSource
     {
         $this->container['events']->listen('clockwork.middleware.start', function () {
             $this->timeline->event('Request processing')->color('purple')->begin();
-            $this->timeline->event('Middleware')->color('yellow')->begin();
         });
 
-        $this->container['events']->listen('clockwork.controller.start', function () {
-            $this->timeline->event('Middleware')->end();
+        // API requests only: bracket controller data-fetching and serialization.
+        // These callbacks only fire inside AbstractSerializeController::handle(),
+        // so they are never reached on forum/admin page requests.
+        AbstractSerializeController::addDataPreparationCallback(AbstractSerializeController::class, function () {
             $this->timeline->event('Controller logic')->color('purple')->begin();
         });
 
-        $this->container['events']->listen('clockwork.controller.end', function () {
-            $this->timeline->event('Data serialization')->end();
+        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function () {
+            $this->timeline->event('Controller logic')->end();
+            $this->timeline->event('Data serialization')->color('purple')->begin();
         });
 
         $this->container['events']->listen('clockwork.middleware.end', function () {
+            if ($this->timeline->find('Data serialization') !== null) {
+                $this->timeline->event('Data serialization')->end();
+            }
+
             $this->timeline->event('Request processing')->end();
 
             if ($this->timeline->find('Clockwork') === null) {
@@ -160,11 +166,6 @@ class FlarumDataSource extends DataSource
             $str = is_string($event) ? $event : get_class($event);
             $this->count[$str] = Arr::get($this->count, $str) ?? 0;
             $this->count[$str]++;
-        });
-
-        AbstractSerializeController::addSerializationPreparationCallback(AbstractSerializeController::class, function () {
-            $this->timeline->event('Controller logic')->end();
-            $this->timeline->event('Data serialization')->color('purple')->begin();
         });
     }
 

@@ -21,7 +21,7 @@ use League\Flysystem\Config;
 
 class FileStoragePath implements LifecycleInterface, ExtenderInterface
 {
-    public function extend(Container $container, Extension $extension = null)
+    public function extend(Container $container, ?Extension $extension = null)
     {
         // TODO: Implement extend() method.
     }
