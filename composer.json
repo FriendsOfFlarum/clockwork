@@ -19,7 +19,8 @@
     ],
     "support": {
         "issues": "https://github.com/FriendsOfFlarum/clockwork/issues",
-        "source": "https://github.com/FriendsOfFlarum/clockwork"
+        "source": "https://github.com/FriendsOfFlarum/clockwork",
+        "forum": "https://discuss.flarum.org/d/38925"
     },
     "homepage": "https://friendsofflarum.org",
     "funding": [
