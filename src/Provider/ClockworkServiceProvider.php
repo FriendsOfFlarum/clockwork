@@ -18,7 +18,6 @@ use Clockwork\DataSource\LaravelQueueDataSource;
 use Clockwork\DataSource\LaravelRedisDataSource;
 use Clockwork\DataSource\MonologDataSource;
 use Clockwork\DataSource\XdebugDataSource;
-use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Clockwork\Request\Log;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Foundation\Paths;
@@ -27,6 +26,7 @@ use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
 use FoF\Clockwork\Clockwork\QueueJobTracker;
 use FoF\Clockwork\Middleware\ClockworkMiddleware;
+use Illuminate\Contracts\Redis\Factory as RedisFactory;
 use Illuminate\Support\ServiceProvider;
 
 class ClockworkServiceProvider extends ServiceProvider
@@ -42,6 +42,7 @@ class ClockworkServiceProvider extends ServiceProvider
                 $this->enableRedisEvents();
                 $this->app['clockwork.redis']->listenToEvents();
             }
+
             return;
         }
 
