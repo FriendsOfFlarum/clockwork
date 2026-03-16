@@ -167,7 +167,6 @@ class FlarumDataSource extends DataSource
             $this->count[$str] = Arr::get($this->count, $str) ?? 0;
             $this->count[$str]++;
         });
-
     }
 
     /**

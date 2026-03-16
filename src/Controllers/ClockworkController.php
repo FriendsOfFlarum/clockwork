@@ -49,15 +49,15 @@ class ClockworkController implements RequestHandlerInterface
 
         // Flarum merges route params into query params (RouteHandlerFactory).
         // The {request:.+} route param captures e.g. "latest", "{id}", "{id}/previous", "{id}/next/50"
-        $path  = $request->getQueryParams()['request'] ?? '';
+        $path = $request->getQueryParams()['request'] ?? '';
         $parts = explode('/', $path);
 
-        $id        = $parts[0] ?? null;
+        $id = $parts[0] ?? null;
         $direction = $parts[1] ?? null;
-        $count     = isset($parts[2]) ? (int) $parts[2] : null;
+        $count = isset($parts[2]) ? (int) $parts[2] : null;
 
         $storage = $this->container['clockwork']->getClockwork()->storage();
-        $search  = Search::fromRequest($request->getQueryParams());
+        $search = Search::fromRequest($request->getQueryParams());
 
         if ($direction === 'previous') {
             $data = $storage->previous($id, $count, $search);
