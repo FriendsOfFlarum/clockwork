@@ -12,7 +12,6 @@
 namespace FoF\Clockwork\Provider;
 
 use Clockwork\DataSource\EloquentDataSource;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Clockwork\DataSource\LaravelCacheDataSource;
 use Clockwork\DataSource\LaravelEventsDataSource;
 use Clockwork\DataSource\LaravelQueueDataSource;
@@ -23,6 +22,7 @@ use Clockwork\Request\Log;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Foundation\Paths;
 use Flarum\Group\Group;
+use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
 use FoF\Clockwork\Clockwork\QueueJobTracker;
