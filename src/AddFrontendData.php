@@ -26,7 +26,7 @@ class AddFrontendData
         $this->container = $container;
     }
 
-    public function __invoke($document = null)
+    public function __invoke(mixed $document = null): void
     {
         if ($this->container->bound('clockwork.flarum')) {
             if (!$document instanceof Document) {

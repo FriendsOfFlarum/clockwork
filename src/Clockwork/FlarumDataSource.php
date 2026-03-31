@@ -38,27 +38,16 @@ class FlarumDataSource extends DataSource
      */
     protected $container;
 
-    /**
-     * Log data structure.
-     */
-    protected $log;
+    protected ?Log $log = null;
 
-    /**
-     * Timeline data structure.
-     */
-    protected $timeline;
+    protected Timeline $timeline;
 
-    /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
+    protected ServerRequestInterface $request;
 
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
+    protected ResponseInterface $response;
 
-    public $count;
+    /** @var array<string, int> */
+    public array $count = [];
 
     /**
      * Create a new data source, takes Laravel container instance as an argument.
@@ -73,7 +62,7 @@ class FlarumDataSource extends DataSource
     /**
      * Adds request method, uri, controller, headers, response status, timeline data and log entries to the request.
      */
-    public function resolve(Request $request)
+    public function resolve(Request $request): Request
     {
         $request->sessionData = $this->getSessionData();
 
@@ -89,21 +78,21 @@ class FlarumDataSource extends DataSource
     }
 
     // Set a log instance
-    public function setLog(Log $log)
+    public function setLog(Log $log): static
     {
         $this->log = $log;
 
         return $this;
     }
 
-    public function setResponse(ResponseInterface $response)
+    public function setResponse(ResponseInterface $response): static
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function setRequest(ServerRequestInterface $request)
+    public function setRequest(ServerRequestInterface $request): static
     {
         $this->request = $request;
 
@@ -113,7 +102,7 @@ class FlarumDataSource extends DataSource
     /**
      * Hook up callbacks for various Laravel events, providing information for timeline and log entries.
      */
-    public function listenToEvents()
+    public function listenToEvents(): void
     {
         $this->container['events']->listen('clockwork.middleware.start', function () {
             $this->timeline->event('Request processing')->color('purple')->begin();
@@ -146,7 +135,7 @@ class FlarumDataSource extends DataSource
     /**
      * Hook up callbacks for some Laravel events, that we need to register as soon as possible.
      */
-    public function listenToEarlyEvents()
+    public function listenToEarlyEvents(): void
     {
         $this->timeline->event('Total execution time')->begin();
         $this->timeline->event('Application booting')->begin();
@@ -184,7 +173,7 @@ class FlarumDataSource extends DataSource
     /**
      * Return session data (replace unserializable items, attempt to remove passwords).
      */
-    protected function getSessionData()
+    protected function getSessionData(): array
     {
         $session = $this->request->getattribute('session');
 
@@ -192,7 +181,7 @@ class FlarumDataSource extends DataSource
     }
 
     // Add authenticated user data to the request
-    protected function resolveAuthenticatedUser(Request $request)
+    protected function resolveAuthenticatedUser(Request $request): void
     {
         $user = RequestUtil::getActor($this->request);
         if ($user->isGuest()) {
@@ -210,7 +199,7 @@ class FlarumDataSource extends DataSource
         $this->request->getServerParams();
     }
 
-    public function addDocumentData(?Document $document = null)
+    public function addDocumentData(?Document $document = null): void
     {
         $this->timeline->event('Clockwork')->begin();
 
@@ -321,7 +310,7 @@ class FlarumDataSource extends DataSource
         }
     }
 
-    public function authenticate(RequestInterface $request)
+    public function authenticate(RequestInterface $request): bool
     {
         $authenticator = $this->container['clockwork']->getAuthenticator();
 
