@@ -13,14 +13,18 @@ namespace FoF\Clockwork\Clockwork;
 
 use Clockwork\Authentication\AuthenticatorInterface;
 use Flarum\Http\RequestUtil;
+use Flarum\Settings\SettingsRepositoryInterface;
 
 class FlarumAuthenticator implements AuthenticatorInterface
 {
     protected int $groupId;
 
-    public function __construct(int $groupId)
+    protected SettingsRepositoryInterface $settings;
+
+    public function __construct(int $groupId, SettingsRepositoryInterface $settings)
     {
         $this->groupId = $groupId;
+        $this->settings = $settings;
     }
 
     public function attempt(array $credentials): bool
@@ -30,6 +34,10 @@ class FlarumAuthenticator implements AuthenticatorInterface
 
     public function check(mixed $request): bool
     {
+        if ($this->settings->get('fof-clockwork.disable_auth')) {
+            return true;
+        }
+
         $user = RequestUtil::getActor($request);
 
         return !$user->isGuest() && $user->groups->contains($this->groupId);

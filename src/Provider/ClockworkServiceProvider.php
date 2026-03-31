@@ -12,6 +12,7 @@
 namespace FoF\Clockwork\Provider;
 
 use Clockwork\DataSource\EloquentDataSource;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Clockwork\DataSource\LaravelCacheDataSource;
 use Clockwork\DataSource\LaravelEventsDataSource;
 use Clockwork\DataSource\LaravelQueueDataSource;
@@ -136,8 +137,8 @@ class ClockworkServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->app->singleton('clockwork.authenticator', function () {
-            return new FlarumAuthenticator(Group::ADMINISTRATOR_ID);
+        $this->app->singleton('clockwork.authenticator', function ($app) {
+            return new FlarumAuthenticator(Group::ADMINISTRATOR_ID, $app->make(SettingsRepositoryInterface::class));
         });
 
         $this->app->singleton('clockwork.log', function () {
