@@ -16,26 +16,26 @@ use Flarum\Http\RequestUtil;
 
 class FlarumAuthenticator implements AuthenticatorInterface
 {
-    protected $groupId;
+    protected int $groupId;
 
-    public function __construct($groupId)
+    public function __construct(int $groupId)
     {
         $this->groupId = $groupId;
     }
 
-    public function attempt(array $credentials)
+    public function attempt(array $credentials): bool
     {
         return true;
     }
 
-    public function check($request)
+    public function check(mixed $request): bool
     {
         $user = RequestUtil::getActor($request);
 
         return !$user->isGuest() && $user->groups->contains($this->groupId);
     }
 
-    public function requires()
+    public function requires(): array
     {
         return [];
     }

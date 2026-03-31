@@ -18,7 +18,7 @@ use Monolog\LogRecord;
 // Stores messages in a Clockwork log instance
 class ClockworkHandler extends AbstractProcessingHandler
 {
-    protected $clockworkLog;
+    protected ClockworkLog $clockworkLog;
 
     public function __construct(ClockworkLog $clockworkLog)
     {
