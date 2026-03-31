@@ -22,6 +22,7 @@ use Clockwork\Request\Log;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Foundation\Paths;
 use Flarum\Group\Group;
+use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
 use FoF\Clockwork\Clockwork\QueueJobTracker;
@@ -136,8 +137,8 @@ class ClockworkServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->app->singleton('clockwork.authenticator', function () {
-            return new FlarumAuthenticator(Group::ADMINISTRATOR_ID);
+        $this->app->singleton('clockwork.authenticator', function ($app) {
+            return new FlarumAuthenticator(Group::ADMINISTRATOR_ID, $app->make(SettingsRepositoryInterface::class));
         });
 
         $this->app->singleton('clockwork.log', function () {

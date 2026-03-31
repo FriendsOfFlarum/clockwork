@@ -15,6 +15,9 @@ use Flarum\Extend;
 use FoF\Clockwork\Extend\FileStoragePath;
 
 return [
+    (new Extend\Settings())
+        ->default('fof-clockwork.disable_auth', false),
+
     (new Extend\Frontend('forum'))
         ->content(AddFrontendData::class),
 
