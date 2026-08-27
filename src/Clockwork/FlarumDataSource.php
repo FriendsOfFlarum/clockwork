@@ -174,7 +174,11 @@ class FlarumDataSource extends DataSource
      */
     protected function getSessionData()
     {
-        $session = $this->request->getattribute('session');
+        $session = $this->request->getAttribute('session');
+
+        if (!$session) {
+            return [];
+        }
 
         return $this->removePasswords((new Serializer())->normalizeEach($session->all()));
     }
