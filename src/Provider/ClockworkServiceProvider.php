@@ -22,6 +22,7 @@ use Clockwork\Request\Log;
 use Clockwork\Support\Vanilla\Clockwork;
 use Flarum\Foundation\Paths;
 use Flarum\Group\Group;
+use Flarum\Queue\RoutingQueue;
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\Clockwork\Clockwork\FlarumAuthenticator;
 use FoF\Clockwork\Clockwork\FlarumDataSource;
@@ -85,9 +86,16 @@ class ClockworkServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('clockwork.queue', function ($app) {
-            /** @var \Illuminate\Queue\Queue $connection */
             $connection = $app->make('flarum.queue.connection');
 
+            // Flarum wraps the connection to route jobs onto their queues. The
+            // wrapper implements only the queue contract, and Clockwork needs
+            // the driver underneath (it calls createPayloadUsing on it).
+            if ($connection instanceof RoutingQueue) {
+                $connection = $connection->getDriver();
+            }
+
+            /** @var \Illuminate\Queue\Queue $connection */
             return new LaravelQueueDataSource($connection);
         });
 
